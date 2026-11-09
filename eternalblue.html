@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EternalBlue</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A playable explainer of the EternalBlue Windows vulnerability, WannaCry and NotPetya, for people with or without a tech background.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Big+Shoulders+Display:wght@600;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one chapter on stage at a time. Narration sits on the night-blue mailroom wall; every game sits on a manila case board with a folder tab. */
+:root{
+  --night:#0b1a4b; --night-2:#132a6f; --night-3:#1c3a92; --rule:#2d4cab;
+  --ink:#f2f5ff; --ink-dim:#b8c4f0;
+  --manila:#eedfb9; --manila-2:#e2cc94; --manila-3:#cfb36f; --label:#fbf6e8;
+  --paper-ink:#2a2312; --paper-dim:#6a5b37;
+  --blue:#2a5ce0; --blue-hi:#6b98ff; --on-blue:#ffffff;
+  --stamp:#cf3527; --stamp-ink:#a3271c; --stamp-hi:#ff7466;
+  --patch:#1f9a5f; --patch-ink:#15703f; --amber:#f2b134;
+  --bsod:#0a2a9e; --skin:#f0c49b; --shadow:rgba(2,8,30,.55);
+  --font-stencil:"Big Shoulders Stencil Display","Arial Narrow",Impact,sans-serif;
+  --font-head:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --font-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;color:var(--ink);font:400 1.125rem/1.6 var(--font-body);
+  background:radial-gradient(1100px 520px at 85% -8%,var(--night-3) 0%,transparent 62%),var(--night);
+  -webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+img,svg{max-width:100%}
+a{color:var(--blue-hi)}
+b,strong{font-weight:700}
+q{quotes:"\201C" "\201D"}
+.mono{font-family:var(--font-mono)}
+
+/* ---------- top bar ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--night)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--night) 94%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule)}
+.topbar-in{max-width:1080px;margin:0 auto;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:center;gap:6px 16px;flex-wrap:wrap}
+.home{color:var(--ink-dim);text-decoration:none;font:600 .95rem/1 var(--font-body);padding:6px 0}
+.home:hover{color:var(--ink)}
+.case{font:800 1.3rem/1 var(--font-head);letter-spacing:.06em;text-transform:uppercase}
+.progress{flex:1;min-width:0}
+.progress ol{list-style:none;display:flex;gap:4px;margin:0;padding:0}
+.progress li{flex:1;min-width:0}
+.pip{appearance:none;display:block;width:100%;height:26px;border:0;background:transparent;cursor:pointer;padding:0;position:relative}
+.pip::after{content:"";position:absolute;left:0;right:0;top:10px;height:6px;border-radius:2px;background:var(--night-3);transition:background .25s}
+.pip.done::after{background:var(--blue-hi)}
+.pip.on::after{background:var(--amber)}
+.pip:hover::after{background:var(--ink-dim)}
+.pip:focus-visible{outline:2px solid var(--amber);outline-offset:1px;border-radius:3px}
+.count{font:600 .85rem/1 var(--font-mono);color:var(--ink-dim);font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:640px){.progress{order:3;flex-basis:100%}.case{margin-right:auto}}
+
+/* ---------- chapters ---------- */
+main{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chapter{padding-block:34px 56px;display:flex;flex-direction:column;gap:22px}
+.chapter>*{margin:0}
+.eyebrow{font:600 .8rem/1.3 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+h1,h2,h3{text-wrap:balance}
+h2{font:800 clamp(2.1rem,5.4vw,3.5rem)/.98 var(--font-head);text-transform:uppercase;letter-spacing:.015em}
+h1:focus,h2:focus{outline:none}
+.narr{max-width:66ch;display:flex;flex-direction:column;gap:.85em}
+.narr p{margin:0}
+.narr b{color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:820px){.hero-grid{grid-template-columns:minmax(0,1fr)}}
+.hero-copy{display:flex;flex-direction:column;gap:16px}
+.hero-copy>*{margin:0}
+.stencil{font:900 clamp(3.1rem,10.5vw,6.3rem)/.86 var(--font-stencil);text-transform:uppercase;letter-spacing:.005em}
+.stencil span{color:var(--blue-hi)}
+.lede{font-size:1.32rem;line-height:1.45}
+.meta{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font:600 .88rem/1.3 var(--font-mono);color:var(--ink-dim)}
+.meta li::before{content:"\25AA\00a0";color:var(--amber)}
+.hero-art{margin:0}
+.hero-svg{display:block;width:100%;height:auto}
+.hero-sign{font:800 30px var(--font-head);letter-spacing:.14em;fill:var(--paper-ink)}
+.hero-plate{font:600 21px var(--font-mono);fill:var(--ink)}
+.win{fill:var(--night-2)}
+.win.lit{fill:var(--amber);opacity:.85}
+.mon{fill:var(--night-2);stroke:var(--blue-hi);stroke-width:2}
+.env-b{fill:var(--label);stroke:var(--paper-ink);stroke-width:1.5}
+.env-f{fill:none;stroke:var(--paper-ink);stroke-width:1.5}
+.env-bad .env-b{fill:var(--stamp)}
+.env-bad .env-f{stroke:var(--label)}
+.fly{opacity:0}
+.f1{animation:f1 4.5s ease-in-out infinite}
+.f2{animation:f2 4.5s ease-in-out 1.5s infinite}
+.f3{animation:f3 4.5s ease-in-out 3s infinite}
+@keyframes f1{0%{transform:translate(64px,122px);opacity:0}8%{opacity:1}50%{transform:translate(236px,150px)}88%{transform:translate(388px,298px);opacity:1}100%{transform:translate(394px,306px) scale(.5);opacity:0}}
+@keyframes f2{0%{transform:translate(110px,226px);opacity:0}8%{opacity:1}50%{transform:translate(256px,236px)}88%{transform:translate(388px,298px);opacity:1}100%{transform:translate(394px,306px) scale(.5);opacity:0}}
+@keyframes f3{0%{transform:translate(64px,312px) scale(1.25);opacity:0}8%{opacity:1}50%{transform:translate(226px,318px) scale(1.25)}88%{transform:translate(384px,294px) scale(1.25);opacity:1}100%{transform:translate(394px,306px) scale(.6);opacity:0}}
+
+/* ---------- shared SVG paint ---------- */
+.s-ink{fill:var(--paper-ink)} .s-paper{fill:var(--manila)} .s-paper2{fill:var(--manila-2)} .s-paper3{fill:var(--manila-3)}
+.s-label{fill:var(--label)} .s-night{fill:var(--night)} .s-night2{fill:var(--night-2)} .s-night3{fill:var(--night-3)}
+.s-blue{fill:var(--blue)} .s-red{fill:var(--stamp)} .s-amber{fill:var(--amber)} .s-skin{fill:var(--skin)} .s-white{fill:var(--ink)}
+.k-ink{stroke:var(--paper-ink)} .k-amber{stroke:var(--amber)} .k-dim{stroke:var(--paper-dim)}
+.no-fill{fill:none}
+
+/* ---------- boards (game surfaces) ---------- */
+.board{position:relative;background-color:var(--manila);color:var(--paper-ink);border-radius:2px 12px 12px 12px;padding:22px clamp(14px,3vw,28px) 24px;margin-top:30px!important;
+  background-image:repeating-linear-gradient(0deg,transparent 0 27px,color-mix(in srgb,var(--manila-3) 22%,transparent) 27px 28px);
+  box-shadow:0 2px 0 var(--manila-3),0 22px 40px -22px var(--shadow);display:flex;flex-direction:column;gap:16px}
+.board>*{margin:0}
+.board a{color:var(--blue)}
+.tab{position:absolute;left:0;top:-30px;height:31px;padding:9px 16px 0;background:var(--manila);border-radius:10px 10px 0 0;font:600 .76rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--paper-dim);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.board-svg{display:block;width:100%;max-width:720px;height:auto;margin-inline:auto}
+.svg-t{font:600 17px var(--font-body);fill:var(--paper-ink)}
+.svg-m{font:600 16px var(--font-mono);fill:var(--paper-ink)}
+.status{min-height:1.6em;font-weight:700}
+.status.bad{color:var(--stamp-ink)}
+.status.good{color:var(--patch-ink)}
+.hint{font-size:.98rem;color:var(--paper-dim)}
+.hint b{color:var(--paper-ink)}
+
+/* ---------- buttons ---------- */
+.btn{appearance:none;border:0;border-radius:6px;background:var(--blue);color:var(--on-blue);font:800 1.15rem/1 var(--font-head);letter-spacing:.06em;text-transform:uppercase;padding:.72em 1.1em;cursor:pointer;transition:transform .12s,background-color .2s,box-shadow .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4em}
+.btn:hover{background:var(--blue-hi)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible,.desk:focus-visible,.tile:focus-visible,.domain:focus-visible,.toggle:focus-within{outline:3px solid var(--amber);outline-offset:2px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.red{background:var(--stamp)}
+.btn.red:hover{background:var(--stamp-ink)}
+.btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 2px currentColor}
+.btn.ghost:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.btn.big{font-size:1.35rem;padding:.8em 1.35em}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* ---------- go deeper ---------- */
+details.deeper{background:var(--night-2);border:1px dashed var(--rule);border-radius:10px;max-width:82ch}
+details.deeper summary{cursor:pointer;padding:14px 18px;font:600 .82rem/1.3 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--amber);list-style:none;display:flex;gap:10px;align-items:center}
+details.deeper summary::-webkit-details-marker{display:none}
+details.deeper summary::before{content:"+";font-size:1.25rem;width:1ch;line-height:1}
+details.deeper[open] summary::before{content:"\2212"}
+details.deeper summary:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:10px}
+.deeper-body{padding:0 18px 18px 46px;display:flex;flex-direction:column;gap:.75em;font-size:1.02rem;color:var(--ink-dim)}
+.deeper-body p{margin:0}
+.deeper-body b{color:var(--ink)}
+.deeper-body code{font-family:var(--font-mono);font-size:.9em;color:var(--ink);background:var(--night-3);padding:.05em .35em;border-radius:4px;overflow-wrap:anywhere}
+
+/* ---------- chapter nav ---------- */
+.chap-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:20px;border-top:1px solid var(--rule)}
+.chap-nav .btn.ghost{color:var(--ink-dim)}
+.chap-nav .spacer{flex:1}
+
+/* ---------- ch1 mailroom ---------- */
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:1rem;min-height:1.6em}
+.log li{padding-left:22px;position:relative}
+.log li::before{content:"\2709";position:absolute;left:0;color:var(--paper-dim)}
+.log li:first-child{font-weight:700}
+.log li.empty::before{content:none}
+.log li.empty{padding-left:0;color:var(--paper-dim);font-weight:400}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.fact{background:var(--night-2);border-radius:10px;padding:16px 18px;border:1px solid var(--rule);display:flex;flex-direction:column;gap:6px}
+.fact h3{margin:0;font:800 1.45rem/1.05 var(--font-head);text-transform:uppercase;letter-spacing:.03em;color:var(--amber)}
+.fact p{margin:0;color:var(--ink-dim)}
+.fact .locked{font-style:italic}
+.fact.lit{border-color:var(--amber);animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.03)}100%{transform:scale(1)}}
+.env-label{font:700 13px var(--font-mono);fill:var(--paper-ink)}
+#mr-env.stranger .env-b{fill:var(--paper-ink)}
+#mr-env.stranger .env-f{stroke:var(--label)}
+#mr-env.stranger .env-label{fill:var(--label)}
+#mr-env.reply .env-b{fill:var(--blue)}
+#mr-env.reply .env-f{stroke:var(--label)}
+#mr-env.reply .env-label{fill:var(--on-blue)}
+.bubble-b{fill:var(--label);stroke:var(--paper-ink);stroke-width:2}
+.bubble-t{font:700 17px var(--font-body);fill:var(--paper-ink)}
+#mr-bubble{transition:opacity .25s}
+
+/* ---------- ch2 stamp ---------- */
+.stamp-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 28px;align-items:start}
+@media (max-width:760px){.stamp-grid{grid-template-columns:minmax(0,1fr)}}
+.label-card{position:relative;background:var(--label);border:2px solid var(--paper-ink);border-radius:6px;padding:14px 16px 12px;box-shadow:4px 4px 0 var(--manila-3)}
+.label-head{font:600 .78rem/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.digits{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:74px 0 6px}
+.digit{aspect-ratio:3/4;border:2px solid var(--paper-ink);border-radius:4px;display:grid;place-items:center;font:600 clamp(1.7rem,5.6vw,2.7rem)/1 var(--font-mono);background:var(--label);transition:color .2s,box-shadow .2s}
+.digit.inked{color:var(--stamp);transform:rotate(-3deg)}
+.digit.untouched{box-shadow:0 0 0 3px var(--amber)}
+.stamp{position:absolute;left:calc((100% - 24px) / 5 + 6px);right:0;top:-70px;height:54px;pointer-events:none;transform:translateY(0);z-index:2}
+.stamp .knob{position:absolute;left:50%;top:0;width:34px;height:24px;margin-left:-17px;background:var(--paper-ink);border-radius:14px 14px 4px 4px}
+.stamp .pad{position:absolute;left:0;right:0;bottom:0;height:28px;background:var(--stamp);border-radius:4px;display:grid;place-items:center;font:600 .7rem/1 var(--font-mono);letter-spacing:.14em;color:var(--on-blue);text-transform:uppercase}
+.stamp.thunk{animation:thunk .75s ease-in-out}
+@keyframes thunk{0%{transform:translateY(0)}45%{transform:translateY(62px)}60%{transform:translateY(62px)}100%{transform:translateY(0)}}
+.label-foot{margin:0;display:flex;justify-content:space-between;gap:8px;font:600 .74rem/1.3 var(--font-mono);color:var(--paper-dim);text-transform:uppercase;letter-spacing:.08em}
+.blind{color:var(--stamp-ink)}
+.sliders{display:flex;flex-direction:column;gap:10px}
+.sliders label,.field-l{font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:4px 10px;flex-wrap:wrap;line-height:1.3}
+.sliders output,.field-l output{font:600 1rem var(--font-mono);font-variant-numeric:tabular-nums;color:var(--paper-ink)}
+input[type=range]{width:100%;accent-color:var(--blue);margin:0;height:28px}
+.steps{margin:0;padding-left:1.5em;display:flex;flex-direction:column;gap:6px}
+.steps li{transition:opacity .35s;padding-left:4px}
+.steps li.dim{opacity:.3}
+.steps li.bad{color:var(--stamp-ink)}
+.steps b{font-family:var(--font-mono);font-weight:600}
+.tray-viz{display:flex;flex-direction:column;gap:8px}
+.track{position:relative;height:50px;background:color-mix(in srgb,var(--manila-3) 38%,transparent);border-radius:6px;overflow:hidden}
+.copied{position:absolute;left:0;top:13px;bottom:13px;width:0;border-radius:3px;background:var(--blue)}
+.copied.anim{transition:width 1.3s ease-out}
+.tray-box{position:absolute;left:0;top:5px;bottom:5px;width:0;border:3px dashed var(--paper-ink);border-radius:5px;transition:width .5s}
+.viz-legend{display:flex;flex-wrap:wrap;gap:4px 18px;font:600 .9rem/1.3 var(--font-mono);font-variant-numeric:tabular-nums}
+.viz-legend .sp{color:var(--stamp-ink)}
+.goals{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.goals li{font:700 .95rem/1.2 var(--font-body);padding:7px 14px 7px 34px;border-radius:999px;border:2px dashed var(--paper-dim);position:relative;color:var(--paper-dim)}
+.goals li::before{content:"";position:absolute;left:11px;top:50%;width:13px;height:13px;margin-top:-7.5px;border:2px solid currentColor;border-radius:3px}
+.goals li.done{border-style:solid;border-color:var(--patch-ink);color:var(--patch-ink)}
+.goals li.done::before{background:var(--patch-ink)}
+
+/* ---------- ch3 spill ---------- */
+.mem-head{display:flex;justify-content:space-between;align-items:center;gap:10px;font:600 .78rem/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--paper-dim)}
+.mem-head .arrow{flex:1;height:2px;background:var(--paper-dim);position:relative}
+.mem-head .arrow::after{content:"";position:absolute;right:-1px;top:-5px;border:6px solid transparent;border-left:9px solid var(--paper-dim);border-right:0}
+.desks{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px}
+.desk{appearance:none;position:relative;border-radius:8px;border:2px solid var(--paper-ink);background:var(--manila-2);color:var(--paper-ink);padding:10px 3px 8px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;cursor:pointer;min-height:112px;font:inherit;overflow:hidden;transition:background-color .25s,border-color .25s,color .25s}
+.desk svg{width:34px;height:34px;flex:none}
+.desk-n{font:600 .74rem/1 var(--font-mono)}
+.desk-l{font:700 .8rem/1.1 var(--font-body);text-align:center}
+.desk.empty{background:transparent;border-style:dashed;border-color:var(--paper-dim);color:var(--paper-dim)}
+.desk.busy{background:repeating-linear-gradient(45deg,var(--manila-3) 0 6px,var(--manila-2) 6px 12px)}
+.desk.yours{background:var(--blue);border-color:var(--blue);color:var(--on-blue)}
+.desk.tray{background:var(--label)}
+.desk.hijacked{background:var(--stamp);border-color:var(--stamp);color:var(--on-blue)}
+.desk.smashed{background:var(--paper-ink);color:var(--label)}
+.desk.flash::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--stamp) 0%,transparent 100%);opacity:.0;animation:spillflash .9s ease-out}
+@keyframes spillflash{0%{opacity:0;transform:translateX(-100%)}40%{opacity:.75}100%{opacity:0;transform:translateX(0)}}
+@media (max-width:560px){.desk-l{display:none}.desk{min-height:78px;padding:8px 2px 6px}.desk svg{width:26px;height:26px}}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.92rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:16px;height:16px;border-radius:4px;border:2px solid var(--paper-ink);flex:none}
+.sw.busy{background:repeating-linear-gradient(45deg,var(--manila-3) 0 3px,var(--manila-2) 3px 6px)}
+.sw.empty{border-style:dashed;border-color:var(--paper-dim)}
+.sw.yours{background:var(--blue);border-color:var(--blue)}
+.sw.tray{background:var(--label)}
+.bsod{position:absolute;inset:0;z-index:4;background:var(--bsod);color:var(--ink);border-radius:inherit;padding:clamp(16px,4vw,40px);display:flex;flex-direction:column;gap:18px;justify-content:center;align-items:flex-start;font:500 clamp(.8rem,2.1vw,1rem)/1.55 var(--font-mono);overflow:auto}
+.bsod pre{margin:0;white-space:pre-wrap;font:inherit}
+.bsod .btn{background:var(--ink);color:var(--bsod)}
+.unlock{background:var(--night-2);border:2px solid var(--amber);border-radius:12px;padding:20px clamp(16px,3vw,26px);display:flex;flex-direction:column;gap:12px;max-width:82ch}
+.unlock>*{margin:0}
+.unlock h3{font:800 clamp(1.6rem,4vw,2.1rem)/1 var(--font-head);text-transform:uppercase;color:var(--amber)}
+.unlock p{color:var(--ink-dim)}
+.unlock b{color:var(--ink)}
+.knock{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.knock .btn.ghost{color:var(--ink)}
+.door-reply{flex-basis:100%;font:600 1rem/1.45 var(--font-mono);padding:12px 14px;background:var(--night);border-radius:8px;margin:0;color:var(--ink-dim)}
+.door-reply.evil{color:var(--stamp-hi)}
+
+/* ---------- ch4 leak ---------- */
+.leak-files{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.leak-files .lf-h{font:600 .76rem/1.2 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim);margin-right:4px}
+.leak-files .f{font:600 .76rem/1 var(--font-mono);letter-spacing:.05em;padding:5px 8px;border:1.5px solid var(--paper-ink);border-radius:3px;background:var(--label)}
+.leak-files .f.hot{background:var(--blue);color:var(--on-blue);border-color:var(--blue)}
+.tl{position:relative;height:150px;margin:0 6px}
+.tl-axis{position:absolute;left:0;right:0;top:66px;height:4px;background:var(--paper-ink);border-radius:2px}
+.tl-tick{position:absolute;top:74px;font:600 .72rem/1 var(--font-mono);color:var(--paper-dim);transform:translateX(-1px);border-left:2px solid var(--paper-dim);padding:2px 0 0 4px;height:14px;letter-spacing:.06em;text-transform:uppercase}
+.pin{position:absolute;top:0;bottom:0;width:0}
+.pin .dot{position:absolute;left:-8px;top:60px;width:16px;height:16px;border-radius:50%;border:3px solid var(--paper-ink);background:var(--label)}
+.pin .lab{position:absolute;transform:translateX(-50%);font:700 .8rem/1.2 var(--font-body);text-align:center;white-space:nowrap}
+.pin .lab small{display:block;font:600 .7rem/1.2 var(--font-mono);color:var(--paper-dim);letter-spacing:.04em}
+.pin.up .lab{bottom:96px}
+.pin.down .lab{top:96px}
+.pin.al-left .lab{transform:translateX(-14px);text-align:left}
+.pin.patch .dot{background:var(--patch);border-color:var(--patch-ink)}
+.pin.leak .dot{background:var(--amber)}
+.pin.real .dot{background:var(--stamp);border-color:var(--stamp-ink);width:20px;height:20px;left:-10px;top:58px}
+.pin.real .lab{color:var(--stamp-ink)}
+.pin.guess .dot{background:var(--blue);border-color:var(--blue);top:62px;width:12px;height:12px;left:-6px}
+.pin.guess .chip{position:absolute;bottom:96px;left:0;transform:translateX(-50%);background:var(--blue);color:var(--on-blue);font:700 .74rem/1 var(--font-mono);padding:5px 7px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
+.pin.guess .stem{position:absolute;left:-1px;width:2px;top:44px;height:18px;background:var(--blue)}
+.pin.real.show{animation:pop .5s ease}
+.gap-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 18px;align-items:end}
+@media (max-width:600px){.gap-row{grid-template-columns:minmax(0,1fr)}}
+.gap-row .field{display:flex;flex-direction:column;gap:6px}
+
+/* ---------- ch5/6 outbreak town ---------- */
+.sim-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px 26px;align-items:end}
+@media (max-width:760px){.sim-top{grid-template-columns:minmax(0,1fr)}}
+.sim-top .field{display:flex;flex-direction:column;gap:6px}
+.switch{display:flex;gap:10px;align-items:flex-start;font-weight:700;cursor:pointer;line-height:1.35}
+.switch input{width:22px;height:22px;accent-color:var(--blue);flex:none;margin:1px 0 0}
+.town{display:block;width:100%;height:auto;background:var(--label);border-radius:10px;border:2px solid var(--paper-ink)}
+.b-zone{fill:var(--manila);stroke:var(--paper-ink);stroke-width:2}
+.b-name{font:700 16px var(--font-body);fill:var(--paper-ink)}
+.town.narrow .b-name{font-size:15px}
+.b-door{fill:var(--paper-ink)}
+.town.fw .b-zone{stroke:var(--stamp-ink);stroke-width:4}
+.town.fw .b-door{fill:var(--stamp)}
+.pc .scr{fill:var(--label);stroke:var(--paper-ink);stroke-width:2;transition:fill .25s}
+.pc .stand{fill:var(--paper-ink)}
+.pc .ico{display:none}
+.pc .i-check{fill:none;stroke:var(--on-blue);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.pc .i-lock-b{fill:var(--on-blue)}
+.pc .i-lock-s{fill:none;stroke:var(--on-blue);stroke-width:2}
+.pc .i-z{font:700 12px var(--font-mono);fill:var(--on-blue)}
+.pc.patched .scr{fill:var(--patch)}
+.pc.patched .i-check{display:inline}
+.pc.infected .scr{fill:var(--stamp)}
+.pc.infected .i-lock{display:inline}
+.pc.incoming .scr{fill:var(--amber)}
+.pc.asleep .scr{fill:var(--paper-dim)}
+.pc.asleep .i-z{display:inline}
+.atk{stroke:var(--stamp);stroke-width:2;stroke-linecap:round;animation:fade .75s forwards}
+.atk.fwb{stroke-dasharray:3 5}
+.ring{fill:none;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:ring .65s forwards}
+.ring.ok{stroke:var(--patch)}
+.ring.no{stroke:var(--stamp)}
+.ring.zero{stroke:var(--stamp);stroke-width:4;animation-duration:1.2s}
+@keyframes fade{0%{opacity:.95}100%{opacity:0}}
+@keyframes ring{0%{transform:scale(.25);opacity:1}100%{transform:scale(1);opacity:0}}
+.stats{display:flex;flex-wrap:wrap;gap:6px 20px;font:600 .95rem/1.3 var(--font-mono);font-variant-numeric:tabular-nums}
+.stats span{display:inline-flex;align-items:center;gap:6px}
+.k{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid var(--paper-ink);flex:none}
+.k.red{background:var(--stamp)} .k.green{background:var(--patch)} .k.plain{background:var(--label)} .k.grey{background:var(--paper-dim)} .k.door{background:var(--stamp);border-radius:2px;height:8px}
+.challenge{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border:2px dashed var(--paper-dim);border-radius:8px;font-weight:600}
+.challenge.done{border-style:solid;border-color:var(--patch-ink);color:var(--patch-ink)}
+.challenge .tick{flex:none;width:18px;height:18px;margin-top:2px;border:2px solid currentColor;border-radius:4px}
+.challenge.done .tick{background:var(--patch-ink)}
+.model-note{font-size:.92rem;color:var(--paper-dim)}
+.realworld{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px}
+.rw{background:var(--night-2);border-radius:10px;padding:14px 16px;border:1px solid var(--rule);display:flex;flex-direction:column;gap:4px}
+.rw b{font:800 2.3rem/1 var(--font-head);color:var(--stamp-hi);letter-spacing:.01em}
+.rw span{color:var(--ink-dim);font-size:.98rem;line-height:1.35}
+.rw-cap{font-size:1rem;color:var(--ink-dim);max-width:70ch}
+
+/* ---------- ch6 kill switch ---------- */
+.recipe{background:var(--label);border:2px solid var(--paper-ink);border-radius:6px;padding:16px 18px;font-family:var(--font-mono);box-shadow:4px 4px 0 var(--manila-3)}
+.recipe-head{font:700 .78rem/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;border-bottom:2px dashed var(--paper-dim);padding-bottom:8px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.recipe ol{margin:0;padding-left:1.5em;display:flex;flex-direction:column;gap:12px;font-size:.98rem;line-height:1.5}
+.domain{appearance:none;font:600 .95rem/1.45 var(--font-mono);overflow-wrap:anywhere;word-break:break-all;background:var(--amber);color:var(--paper-ink);border:0;border-radius:4px;padding:1px 6px;cursor:pointer;text-align:left;animation:beckon 1.8s ease-in-out infinite}
+.domain.reg{background:var(--patch);color:var(--on-blue);animation:none}
+@keyframes beckon{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--amber) 70%,transparent)}50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--amber) 0%,transparent)}}
+.addr-state{font:600 .9rem/1.3 var(--font-mono);display:inline-flex;gap:8px;align-items:center}
+.addr-state .led{width:12px;height:12px;border-radius:50%;background:var(--stamp);border:2px solid var(--paper-ink)}
+.addr-state.on .led{background:var(--patch)}
+.registrar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between;background:var(--night-2);color:var(--ink);border-radius:8px;padding:14px 16px}
+.registrar p{margin:0;min-width:0}
+.registrar .dn{font:600 .9rem var(--font-mono);overflow-wrap:anywhere}
+.registrar .avail{font:700 .78rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--night);background:var(--amber);padding:3px 7px;border-radius:3px;margin-left:6px}
+.registrar .price{font:800 1.8rem/1 var(--font-head)}
+
+/* ---------- ch7 notpetya ---------- */
+.np-grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:600px){.np-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.tile{appearance:none;border:2px solid var(--paper-ink);border-radius:8px;background:var(--label);color:var(--paper-ink);padding:10px 9px;min-height:86px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;font:inherit;cursor:pointer;gap:6px;transition:background-color .3s,color .3s,border-color .3s;min-width:0}
+.tile .city{font:700 .98rem/1.15 var(--font-body);overflow-wrap:anywhere}
+.tile .st{font:600 .68rem/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+.tile.wiped{background:var(--paper-ink);color:var(--manila);border-color:var(--paper-ink)}
+.tile.wiped .st{color:var(--stamp-hi)}
+.tile.offline{background:var(--manila-3);border-style:dashed}
+.tile.found{background:var(--patch);color:var(--on-blue);border-color:var(--patch-ink)}
+.tile.rebuilt{background:var(--label);color:var(--paper-ink);border-color:var(--patch-ink)}
+.tile.rebuilt .st{color:var(--patch-ink)}
+.tile.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.plane{position:absolute;left:0;top:0;width:38px;height:38px;pointer-events:none;z-index:3;transition:transform 1.1s ease-in-out;filter:drop-shadow(0 2px 2px var(--shadow))}
+.plane svg{width:100%;height:100%}
+.np-note{font-size:.9rem;color:var(--paper-dim)}
+.daycount{font:800 1.4rem/1 var(--font-head);letter-spacing:.04em}
+
+/* ---------- ch8 chain ---------- */
+.chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.link{position:relative;padding:8px 8px 4px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.link::after{content:"";position:absolute;top:28px;left:calc(50% + 34px);right:calc(-50% + 34px);height:5px;background:var(--paper-ink);border-radius:3px;z-index:0}
+.link:last-child::after{content:none}
+.link svg{width:72px;height:42px;position:relative;z-index:1;flex:none}
+.lk{fill:none;stroke:var(--paper-ink);stroke-width:7;transition:stroke .3s}
+.link-n{font:600 .7rem/1 var(--font-mono);letter-spacing:.1em;color:var(--paper-dim)}
+.link-t{font:700 .95rem/1.25 var(--font-body)}
+.link .by{font:700 .7rem/1.25 var(--font-mono);color:var(--stamp-ink);text-transform:uppercase;letter-spacing:.05em;min-height:1.25em}
+.link.broken .lk{stroke:var(--stamp);stroke-dasharray:60 18;transform:rotate(-8deg);transform-origin:center;transform-box:fill-box}
+.link.broken .link-t{text-decoration:line-through;text-decoration-thickness:2px;opacity:.55}
+.link.broken::after{background:repeating-linear-gradient(90deg,var(--stamp) 0 6px,transparent 6px 12px)}
+@media (max-width:760px){
+  .chain{grid-template-columns:minmax(0,1fr);gap:4px}
+  .link{display:grid;grid-template-columns:72px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;text-align:left;align-items:center;padding:4px 0}
+  .link svg{grid-row:1 / span 3}
+  .link::after{top:auto;bottom:-14px;left:33px;right:auto;width:5px;height:22px}
+}
+.defences{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:8px}
+.defences legend{font:600 .78rem/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;padding:0}
+.toggle{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:2px solid var(--paper-ink);border-radius:8px;cursor:pointer;background:var(--label);font-weight:700;line-height:1.3;transition:background-color .2s,color .2s}
+.toggle input{width:20px;height:20px;accent-color:var(--patch-ink);flex:none;margin:0}
+.toggle small{display:block;font-weight:400;font-size:.88rem;margin-top:2px;opacity:.85}
+.toggle:has(input:checked){background:var(--paper-ink);color:var(--manila)}
+.verdict{background:var(--label);border:2px solid var(--paper-ink);border-radius:8px;padding:14px 16px;font-size:1.05rem;line-height:1.5}
+.verdict b{display:block;font:800 1.35rem/1.1 var(--font-head);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+.verdict.safe b{color:var(--patch-ink)} .verdict.mid b{color:var(--paper-ink)} .verdict.bad b{color:var(--stamp-ink)}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.tipcard{background:var(--night-2);border:1px solid var(--rule);border-radius:10px;padding:16px 18px}
+.tipcard h3{margin:0 0 8px;font:800 1.4rem/1.05 var(--font-head);text-transform:uppercase;letter-spacing:.03em;color:var(--amber)}
+.tipcard ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:var(--ink-dim)}
+
+/* ---------- ch9 timeline ---------- */
+.timeline{list-style:none;margin:0 0 0 8px;padding:0;max-width:78ch;border-left:3px solid var(--rule)}
+.timeline li{position:relative;padding:0 0 22px 26px}
+.timeline li:last-child{padding-bottom:4px}
+.timeline li::before{content:"";position:absolute;left:-10px;top:5px;width:17px;height:17px;border-radius:50%;background:var(--night);border:3px solid var(--blue-hi);box-sizing:border-box}
+.timeline li.hot::before{border-color:var(--stamp-hi);background:var(--stamp-hi)}
+.timeline time{display:block;font:600 .82rem/1.3 var(--font-mono);letter-spacing:.08em;color:var(--amber);text-transform:uppercase}
+.timeline p{margin:3px 0 0;color:var(--ink-dim)}
+.timeline p b{color:var(--ink)}
+.ref{font:600 .74rem/1 var(--font-mono);text-decoration:none;color:var(--blue-hi);margin-left:3px;white-space:nowrap}
+.sources{margin:0;padding-left:1.6em;max-width:82ch;display:flex;flex-direction:column;gap:6px;color:var(--ink-dim);font-size:1rem}
+.sources a{overflow-wrap:anywhere}
+.sources .pub{color:var(--ink-dim)}
+h3.sec{font:800 1.7rem/1 var(--font-head);text-transform:uppercase;letter-spacing:.03em;margin:8px 0 0}
+.credits{font-size:.95rem;color:var(--ink-dim);max-width:70ch}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .fly{opacity:1;animation:none!important}
+  .f1{transform:translate(200px,140px)} .f2{transform:translate(250px,236px)} .f3{transform:translate(260px,312px) scale(1.25)}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="home" href="index.html">&larr; All cases</a>
+    <span class="case">EternalBlue</span>
+    <nav class="progress" aria-label="Chapters"><ol id="progress"></ol></nav>
+    <span class="count" id="count" aria-live="polite">1 / 10</span>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ================= START ================= -->
+<section class="chapter hero" id="start" data-title="Start">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Byte-Sized Breaches &middot; Case file 01 &middot; 2017</p>
+      <h1 class="stencil" tabindex="-1">Eternal<span>Blue</span></h1>
+      <p class="lede">In 2017, one miscounted number deep inside Windows let a leaked spy tool lock up hospitals, car factories and more than 200,000 computers in a few days.</p>
+      <p>This is how it worked, told as a story with small games along the way. You don't need to know anything about computers.</p>
+      <ul class="meta"><li>About 15 minutes</li><li>8 small games</li><li>Optional "Go deeper" notes</li></ul>
+      <div class="controls"><button class="btn big" type="button" data-go="next">Open the mailroom &rarr;</button></div>
+    </div>
+    <figure class="hero-art">
+      <svg class="hero-svg" viewBox="0 0 600 420" role="img" aria-label="Three computers sending envelopes into a mailroom door numbered 445. One envelope is red: the attack.">
+        <rect class="s-night2" x="0" y="372" width="600" height="6" rx="3"/>
+        <rect class="s-night3" x="250" y="78" width="320" height="294" rx="6"/>
+        <rect class="s-paper" x="296" y="44" width="228" height="48" rx="4"/>
+        <text class="hero-sign" x="410" y="79" text-anchor="middle">MAILROOM</text>
+        <rect class="win" x="280" y="116" width="58" height="42" rx="3"/>
+        <rect class="win lit" x="381" y="116" width="58" height="42" rx="3"/>
+        <rect class="win" x="482" y="116" width="58" height="42" rx="3"/>
+        <rect class="win lit" x="280" y="180" width="58" height="42" rx="3"/>
+        <rect class="win" x="381" y="180" width="58" height="42" rx="3"/>
+        <rect class="win lit" x="482" y="180" width="58" height="42" rx="3"/>
+        <rect class="s-paper2" x="368" y="244" width="84" height="128" rx="4"/>
+        <rect class="s-night" x="384" y="258" width="52" height="32" rx="3"/>
+        <text class="hero-plate" x="410" y="281" text-anchor="middle">445</text>
+        <rect class="s-ink" x="380" y="312" width="60" height="10" rx="2"/>
+        <circle class="s-ink" cx="440" cy="342" r="4"/>
+        <g transform="translate(24,108)"><rect class="mon" x="0" y="0" width="86" height="58" rx="5"/><rect class="s-blue" x="7" y="7" width="72" height="44" rx="2"/><rect class="s-night3" x="37" y="58" width="12" height="10"/><rect class="s-night3" x="25" y="68" width="36" height="5" rx="2"/></g>
+        <g transform="translate(70,212)"><rect class="mon" x="0" y="0" width="86" height="58" rx="5"/><rect class="s-blue" x="7" y="7" width="72" height="44" rx="2"/><rect class="s-night3" x="37" y="58" width="12" height="10"/><rect class="s-night3" x="25" y="68" width="36" height="5" rx="2"/></g>
+        <g transform="translate(24,298)"><rect class="mon" x="0" y="0" width="86" height="58" rx="5"/><rect class="s-blue" x="7" y="7" width="72" height="44" rx="2"/><rect class="s-night3" x="37" y="58" width="12" height="10"/><rect class="s-night3" x="25" y="68" width="36" height="5" rx="2"/></g>
+        <g class="fly f1"><rect class="env-b" x="0" y="0" width="40" height="26" rx="3"/><path class="env-f" d="M1 1 L20 15 L39 1"/></g>
+        <g class="fly f2"><rect class="env-b" x="0" y="0" width="40" height="26" rx="3"/><path class="env-f" d="M1 1 L20 15 L39 1"/></g>
+        <g class="fly f3 env-bad"><rect class="env-b" x="0" y="0" width="40" height="26" rx="3"/><path class="env-f" d="M1 1 L20 15 L39 1"/></g>
+      </svg>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= 1 MAILROOM ================= -->
+<section class="chapter" id="mailroom" data-title="The mailroom" hidden>
+  <p class="eyebrow">Chapter 1 &middot; The mailroom</p>
+  <h2 tabindex="-1">Every Windows computer has a mailroom</h2>
+  <div class="narr">
+    <p>When computers in an office share files or printers, they send each other little requests. <q>Can I have the budget spreadsheet?</q> <q>Please print this.</q></p>
+    <p>On Windows, the part that handles those requests is called <b>SMB</b>. Picture a mailroom clerk behind a hatch numbered <b class="mono">445</b>, waiting for packages from other computers.</p>
+    <p>Send the clerk a few packages and see how the mailroom works.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 1 &middot; Send a package</div>
+    <svg class="board-svg" id="mr-svg" viewBox="0 0 600 300" role="img" aria-label="Another computer on the left is connected by a cable to a mailroom hatch numbered 445. Behind it, a clerk stands at a counter.">
+      <!-- other PC -->
+      <rect class="s-night3" x="30" y="88" width="120" height="86" rx="6"/>
+      <rect class="s-blue" x="38" y="96" width="104" height="64" rx="3"/>
+      <rect class="s-ink" x="80" y="174" width="20" height="16"/>
+      <rect class="s-ink" x="60" y="190" width="60" height="8" rx="3"/>
+      <text class="svg-m" x="90" y="226" text-anchor="middle">ANOTHER PC</text>
+      <!-- cable -->
+      <path class="no-fill k-dim" d="M150 150 C 230 150, 270 158, 356 158" stroke-width="3" stroke-dasharray="6 6"/>
+      <!-- wall -->
+      <rect class="s-paper3" x="352" y="20" width="236" height="262" rx="6"/>
+      <rect class="s-ink" x="364" y="86" width="52" height="26" rx="3"/>
+      <text class="svg-m" x="390" y="105" text-anchor="middle" style="fill:var(--manila)">445</text>
+      <rect class="s-night" x="360" y="118" width="60" height="76" rx="4"/>
+      <!-- shelves -->
+      <rect class="s-paper2" x="436" y="34" width="140" height="62" rx="3"/>
+      <path class="no-fill k-ink" stroke-width="2" d="M436 65 H576 M471 34 V96 M506 34 V96 M541 34 V96"/>
+      <rect class="s-label" x="444" y="44" width="20" height="14" rx="1"/>
+      <rect class="s-label" x="514" y="72" width="20" height="14" rx="1"/>
+      <rect class="s-label" x="549" y="44" width="20" height="14" rx="1"/>
+      <!-- clerk -->
+      <rect class="s-blue" x="470" y="146" width="70" height="70" rx="18"/>
+      <circle class="s-skin" cx="505" cy="126" r="22"/>
+      <rect class="s-night" x="482" y="100" width="46" height="13" rx="5"/>
+      <rect class="s-night" x="474" y="108" width="34" height="6" rx="3"/>
+      <circle class="no-fill k-ink" cx="497" cy="127" r="6" stroke-width="2"/>
+      <circle class="no-fill k-ink" cx="513" cy="127" r="6" stroke-width="2"/>
+      <path class="no-fill k-ink" stroke-width="2" d="M503 127 H507 M498 139 Q505 144 512 139"/>
+      <circle class="no-fill k-amber" cx="530" cy="178" r="6" stroke-width="3"/>
+      <rect class="s-amber" x="526" y="183" width="4" height="12" rx="1"/>
+      <rect class="s-amber" x="532" y="183" width="4" height="9" rx="1"/>
+      <!-- counter -->
+      <rect class="s-paper2" x="426" y="198" width="162" height="84"/>
+      <rect class="s-ink" x="426" y="196" width="162" height="6"/>
+      <text class="svg-m" x="507" y="252" text-anchor="middle" style="font-size:14px;fill:var(--paper-dim)">SMB CLERK</text>
+      <!-- bubble -->
+      <g id="mr-bubble" style="opacity:0">
+        <rect class="bubble-b" x="398" y="16" width="192" height="64" rx="10"/>
+        <path class="bubble-b" d="M484 79 L500 96 L506 79"/>
+        <rect class="s-label" x="485" y="76" width="20" height="6"/>
+        <text class="bubble-t" id="mr-b1" x="494" y="42" text-anchor="middle"></text>
+        <text class="bubble-t" id="mr-b2" x="494" y="66" text-anchor="middle"></text>
+      </g>
+      <!-- envelope -->
+      <g id="mr-env" transform="translate(90,128)" style="opacity:0">
+        <rect class="env-b" x="-32" y="-20" width="64" height="40" rx="3"/>
+        <path class="env-f" d="M-31 -19 L0 3 L31 -19"/>
+        <text class="env-label" id="mr-env-label" x="0" y="15" text-anchor="middle">FILE?</text>
+      </g>
+    </svg>
+    <div class="controls">
+      <button class="btn" type="button" data-req="file">Ask for a file</button>
+      <button class="btn" type="button" data-req="print">Print something</button>
+      <button class="btn red" type="button" data-req="stranger">Package from a stranger</button>
+    </div>
+    <ol class="log" id="mr-log" aria-live="polite"><li class="empty">Nothing sent yet. Pick a package above.</li></ol>
+  </div>
+  <div class="facts">
+    <article class="fact" id="fact-stranger">
+      <h3>No ID needed</h3>
+      <p class="locked">Send a package from a stranger to find this out.</p>
+      <p class="unlocked" hidden>The clerk opens some kinds of packages without asking who sent them. An attacker doesn't need a password to start talking to the mailroom.</p>
+    </article>
+    <article class="fact">
+      <h3>Master keys</h3>
+      <p>See the keys on the clerk's belt? The clerk carries the master keys to the whole building. Whatever the clerk does, it does with full control of the computer. Techies call this level the <em>kernel</em>.</p>
+    </article>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; What SMB really is</summary>
+    <div class="deeper-body">
+      <p><b>SMB</b> stands for Server Message Block. It's how Windows computers share files and printers, and its first version dates from the 1980s.</p>
+      <p>In 2017 the old version, <b>SMBv1</b>, was still switched on in most Windows computers, even though newer versions existed.</p>
+      <p>It listens on network <b>port 445</b>. A port is like a numbered door on a computer: different services wait behind different numbers.</p>
+      <p>Windows handles SMBv1 in a driver called <code>srv.sys</code>, which runs inside the <b>kernel</b>, the most powerful part of the system. A bug there means total control.</p>
+      <p>EternalBlue didn't need a username or password. It connected with an anonymous login, known as a "null session".</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 2 STAMP ================= -->
+<section class="chapter" id="stamp" data-title="The bug" hidden>
+  <p class="eyebrow">Chapter 2 &middot; The bug</p>
+  <h2 tabindex="-1">A stamp with one digit missing</h2>
+  <div class="narr">
+    <p>Some packages carry an old-style packing list, in a format from the early 1990s. Before filing it, the clerk translates it into the modern format.</p>
+    <p>First the clerk checks how long the list is. If there's junk at the end, the clerk crosses it out and stamps the corrected length onto the label.</p>
+    <p>Here's the bug. The label has room for <b>five</b> digits, but the clerk's correction stamp only has <b>four</b>. The first digit never changes.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 2 &middot; The stamp</div>
+    <div class="stamp-grid">
+      <div class="label-card">
+        <div class="label-head"><span>Packing list</span><span>Length in entries</span></div>
+        <div class="digits" id="st-digits">
+          <div class="stamp" id="st-stamp" aria-hidden="true"><div class="knob"></div><div class="pad">4-digit stamp</div></div>
+          <span class="digit">1</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span><span class="digit">0</span>
+        </div>
+        <p class="label-foot"><span class="blind">&uarr; Stamp can't reach</span><span>Stamp covers these &uarr;</span></p>
+      </div>
+      <div class="sliders">
+        <label for="st-a">Length the attacker writes on the label <output id="st-a-out" for="st-a">10,000</output></label>
+        <input type="range" id="st-a" min="1000" max="30000" step="50" value="10000">
+        <label for="st-b">Where the junk starts (the real length) <output id="st-b-out" for="st-b">9,950</output></label>
+        <input type="range" id="st-b" min="100" max="10000" step="50" value="9950">
+        <div class="controls"><button class="btn red" type="button" id="st-go">Stamp it</button></div>
+      </div>
+    </div>
+    <ol class="steps" id="st-steps"></ol>
+    <div class="tray-viz">
+      <div class="track" aria-hidden="true"><div class="copied" id="st-copied"></div><div class="tray-box" id="st-tray"></div></div>
+      <div class="viz-legend"><span>Tray holds: <b id="st-tray-n">&ndash;</b></span><span>Clerk copies: <b id="st-copy-n">&ndash;</b></span><span class="sp">Spilled: <b id="st-spill-n">&ndash;</b></span></div>
+    </div>
+    <ul class="goals"><li id="goal-safe">Stamp a label with no spill</li><li id="goal-spill">Make entries spill out of the tray</li></ul>
+    <p class="status" id="st-status" aria-live="polite"></p>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; The real numbers</summary>
+    <div class="deeper-body">
+      <p>The "packing list" is a list of <b>file extended attributes</b>: small labels attached to files, sent here in the old OS/2 format. Translating it is the job of a function in <code>srv.sys</code> called <code>SrvOs2FeaListToNt</code>.</p>
+      <p>The list's length is stored as a 32-bit number. The code that corrects it, <code>SrvOs2FeaListSizeToNt</code>, writes back only a 16-bit number, so only the bottom half changes. Computers count in hexadecimal here, but the effect is exactly like the stamp above.</p>
+      <p>EternalBlue sends a list that claims to be <code>0x10000</code> bytes long (65,536). After the "correction" it claims <code>0x1FF5D</code> instead of <code>0xFF5D</code>: about 64 KB more than Windows set aside.</p>
+      <p>Two smaller bugs helped. One let the attacker send a list big enough to need that fifth digit, by starting a request as one kind of transaction and finishing it as another. The other let them reserve a block of memory of a size they chose, which comes in handy in the next chapter.</p>
+      <p>Microsoft tracks the main flaw as <b>CVE-2017-0144</b> and fixed it in update <b>MS17-010</b>.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 3 SPILL ================= -->
+<section class="chapter" id="spill" data-title="The spill" hidden>
+  <p class="eyebrow">Chapter 3 &middot; The spill</p>
+  <h2 tabindex="-1">Spilling onto the next desk</h2>
+  <div class="narr">
+    <p>Writing past the end of the space you set aside is called a <b>buffer overflow</b>. The extra entries spill out of the tray onto whatever sits next to it in the computer's memory.</p>
+    <p>Usually that just crashes the computer, and Windows shows its famous blue error screen. But if the attacker can choose what sits next to the tray, the spill becomes a weapon.</p>
+    <p>Some desks hold an <b>instruction card</b> that tells the clerk what to do next. Arrange the desks so the spill lands on one of <em>your</em> cards.</p>
+  </div>
+  <div class="board" id="sp-board">
+    <div class="tab">Game 3 &middot; Aim the spill</div>
+    <div class="mem-head"><span>Computer memory</span><span class="arrow"></span><span>Desk 8</span></div>
+    <div class="desks" id="sp-desks" role="group" aria-label="Eight desks in memory"></div>
+    <div class="legend" aria-hidden="true">
+      <span><i class="sw busy"></i>Used by Windows</span>
+      <span><i class="sw empty"></i>Empty</span>
+      <span><i class="sw yours"></i>Your connection (has an instruction card)</span>
+      <span><i class="sw tray"></i>The tray</span>
+    </div>
+    <div class="controls">
+      <button class="btn" type="button" id="sp-open">Open a connection</button>
+      <button class="btn red" type="button" id="sp-send">Send the poisoned list</button>
+      <button class="btn ghost" type="button" id="sp-reset">Reset</button>
+      <button class="btn ghost" type="button" id="sp-demo">Show me how</button>
+    </div>
+    <p class="hint"><b>Rules:</b> a new connection takes the first empty desk from the left. Click one of your connections to close it. The tray also goes into the first empty desk, and the spill hits the desk to its right.</p>
+    <p class="status" id="sp-status" aria-live="polite">Tip: what happens if you send the poisoned list right away?</p>
+    <div class="bsod" id="sp-bsod" hidden>
+      <pre>A problem has been detected and Windows has been shut down to prevent damage to your computer.
+
+PAGE_FAULT_IN_NONPAGED_AREA
+
+*** STOP: 0x00000050</pre>
+      <p style="margin:0">The spill smashed a desk Windows was using, so the computer crashed instead of being taken over. Real attacks crashed computers this way too.</p>
+      <button class="btn" type="button" id="sp-restart">Restart and try again</button>
+    </div>
+  </div>
+  <div class="unlock" id="sp-after" hidden>
+    <h3>The attacker now holds the master keys</h3>
+    <p>The clerk reads the overwritten card and follows it straight into the attacker's own instructions. Because the clerk carries the master keys, the attacker now controls the whole computer. No password. Nobody clicked anything.</p>
+    <p>EternalBlue then installed a hidden back door called <b>DoublePulsar</b>. It ignores normal visitors and answers only a secret knock. Try both.</p>
+    <div class="knock">
+      <button class="btn ghost" type="button" data-knock="normal">Knock normally</button>
+      <button class="btn red" type="button" data-knock="secret">Secret knock</button>
+      <p class="door-reply" id="knock-reply" aria-live="polite">Door 445 is quiet.</p>
+    </div>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; Grooming the heap</summary>
+    <div class="deeper-body">
+      <p>The desks are chunks of kernel memory called the <b>non-paged pool</b>. The attacker opens many connections at once, and each one makes Windows reserve a buffer (an "srvnet buffer") in a predictable spot. Arranging memory like this is called <b>heap grooming</b>, or "heap feng shui".</p>
+      <p>Then the attacker frees one slot, so the overflowing buffer lands in that gap, right in front of one of the attacker's own buffers.</p>
+      <p>The spill overwrites the start of that neighbouring buffer, including a pointer that says where incoming network data should be stored. It points at a memory address that was fixed and predictable on older Windows versions. The attacker's next message gets written there, and Windows ends up running it as code with full kernel power.</p>
+      <p>It didn't always work. When the layout went wrong the machine crashed, which is why many Windows XP computers hit by WannaCry showed a blue screen instead of a ransom note.</p>
+      <p>DoublePulsar hid inside one of SMB's own commands. Defenders later scanned for it by sending that command and looking for its tell-tale reply.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 4 LEAK ================= -->
+<section class="chapter" id="leak" data-title="The leak" hidden>
+  <p class="eyebrow">Chapter 4 &middot; The leak</p>
+  <h2 tabindex="-1">A spy tool gets loose</h2>
+  <div class="narr">
+    <p>Ordinary criminals didn't find this bug. EternalBlue came from the US National Security Agency (NSA), which had kept the flaw secret instead of reporting it to Microsoft.</p>
+    <p>In 2016, a mysterious group calling itself the <b>Shadow Brokers</b> started leaking hacking tools it said were stolen from an NSA-linked team. On <b>14 April 2017</b> it posted EternalBlue online for anyone to download.</p>
+    <p>One month earlier, on <b>14 March 2017</b>, Microsoft had released a fix called <b>MS17-010</b>. The cure was out before the weapon. The only question was whether people had installed it.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 4 &middot; Mind the gap</div>
+    <div class="leak-files" aria-label="Some of the tools in the April 2017 leak">
+      <span class="lf-h">In the April 2017 leak:</span>
+      <span class="f hot">ETERNALBLUE</span><span class="f">ETERNALROMANCE</span><span class="f">ETERNALCHAMPION</span><span class="f">ETERNALSYNERGY</span><span class="f">DOUBLEPULSAR</span><span class="f">ESTEEMAUDIT</span>
+    </div>
+    <div class="tl" id="gap-tl" aria-hidden="true">
+      <div class="tl-axis"></div>
+      <span class="tl-tick" style="left:0%">Mar</span>
+      <span class="tl-tick" style="left:22.8%">Apr</span>
+      <span class="tl-tick" style="left:44.85%">May</span>
+      <span class="tl-tick" style="left:67.65%">Jun</span>
+      <span class="tl-tick" style="left:89.7%">Jul</span>
+      <div class="pin patch down al-left" style="left:9.56%"><span class="dot"></span><span class="lab">Fix released<small>14 Mar</small></span></div>
+      <div class="pin leak up" style="left:32.35%"><span class="dot"></span><span class="lab">EternalBlue leaked<small>14 Apr</small></span></div>
+      <div class="pin guess" id="gap-pin" style="left:31.6%"><span class="chip" id="gap-chip">YOUR GUESS</span><span class="stem"></span><span class="dot"></span></div>
+      <div class="pin real down" id="gap-real" style="left:52.94%" hidden><span class="dot"></span><span class="lab">WannaCry<small>12 May</small></span></div>
+    </div>
+    <div class="gap-row">
+      <div class="field">
+        <label class="field-l" for="gap-guess">How many days after the fix did WannaCry strike? <output id="gap-out" for="gap-guess">25 days (8 Apr)</output></label>
+        <input type="range" id="gap-guess" min="1" max="120" value="25">
+      </div>
+      <button class="btn" type="button" id="gap-lock">Lock in my guess</button>
+    </div>
+    <p class="status" id="gap-result" aria-live="polite"></p>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; Patches, leaks and missiles</summary>
+    <div class="deeper-body">
+      <p>Microsoft skipped its usual February 2017 update day, which was unusual. The March update, MS17-010, fixed six SMBv1 bugs (<code>CVE-2017-0143</code> to <code>CVE-2017-0148</code>). Reports later said the NSA had warned Microsoft once it realised its tools had been stolen.</p>
+      <p>The leak included other tools with similar names, such as EternalRomance, EternalChampion and EternalSynergy, plus the DoublePulsar back door.</p>
+      <p>Windows XP had stopped getting updates in April 2014. After WannaCry, Microsoft took the rare step of releasing a fix for it anyway.</p>
+      <p>Microsoft's president, Brad Smith, compared the leak to "the U.S. military having some of its Tomahawk missiles stolen", and called on governments to report flaws instead of stockpiling them.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 5 OUTBREAK ================= -->
+<section class="chapter" id="outbreak" data-title="Outbreak" hidden>
+  <p class="eyebrow">Chapter 5 &middot; Outbreak</p>
+  <h2 tabindex="-1">WannaCry: a worm that knocks on every door</h2>
+  <div class="narr">
+    <p>On Friday <b>12 May 2017</b>, a program called <b>WannaCry</b> started spreading. It was ransomware: it scrambled (encrypted) people's files and demanded <b>$300 in Bitcoin</b> to unscramble them, rising to $600 after three days.</p>
+    <p>What made it so fast was EternalBlue. WannaCry was a <b>worm</b>: every infected computer looked for other computers with door 445 open, broke in with EternalBlue, and started looking again. Nobody had to click anything.</p>
+    <p>Here's a small town of 60 computers, in the kinds of places the real WannaCry hit. Set how prepared the town is, then release the worm.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 5 &middot; Outbreak town</div>
+    <div class="sim-top">
+      <div class="field">
+        <label class="field-l" for="ob-patch">Computers with the March fix installed <output id="ob-patch-out" for="ob-patch">20%</output></label>
+        <input type="range" id="ob-patch" min="0" max="100" step="5" value="20">
+      </div>
+      <label class="switch" for="ob-fw"><input type="checkbox" id="ob-fw"> Firewall: block door 445 at every building's front door</label>
+    </div>
+    <div class="controls">
+      <button class="btn red" type="button" id="ob-run">Release WannaCry</button>
+      <button class="btn ghost" type="button" id="ob-reset">Reset</button>
+    </div>
+    <svg class="town" id="ob-svg" viewBox="0 0 800 400" role="img" aria-label="Six buildings with ten computers each. Live counts are listed below the picture."></svg>
+    <div class="stats" id="ob-stats">
+      <span><i class="k red"></i>Encrypted <b data-s="enc">0</b></span>
+      <span><i class="k green"></i>Has the fix <b data-s="patched">0</b></span>
+      <span><i class="k plain"></i>Untouched <b data-s="untouched">0</b></span>
+      <span>Ransom demanded <b data-s="ransom">$0</b></span>
+    </div>
+    <p class="status" id="ob-status" aria-live="polite">Press <b>Release WannaCry</b> to start.</p>
+    <div class="challenge" id="ob-challenge"><span class="tick"></span><span><b>Challenge:</b> keep it to 5 encrypted computers or fewer, with the fix slider at 65% or lower. One control isn't on the slider.</span></div>
+    <p class="model-note">In this model, each infected computer gets five tries before someone pulls its plug, and the first infection arrives on one unpatched computer, through an exposed machine or a visiting laptop. A red door means the firewall is on.</p>
+  </div>
+  <div class="realworld">
+    <div class="rw"><b>200,000+</b><span>computers infected in a few days</span></div>
+    <div class="rw"><b>150+</b><span>countries hit</span></div>
+    <div class="rw"><b>81</b><span>of England's 236 NHS hospital trusts affected</span></div>
+    <div class="rw"><b>~19,000</b><span>NHS appointments cancelled</span></div>
+  </div>
+  <p class="rw-cap">Renault paused car factories. Station screens at Germany's Deutsche Bahn showed the ransom note. Spain's Telefónica was hit too.</p>
+  <details class="deeper">
+    <summary>Go deeper &middot; Inside WannaCry</summary>
+    <div class="deeper-body">
+      <p>WannaCry scanned its own local network and random internet addresses for port 445. When it found an open door, it checked for the DoublePulsar back door, broke in with EternalBlue if needed, then used the back door to copy itself across.</p>
+      <p>It encrypted files with strong encryption (AES for the files, with the keys locked by RSA), so there was no shortcut to unlock them without the attackers' key.</p>
+      <p>Paying rarely helped. Only about $140,000 in Bitcoin was paid in total, and the attackers had no reliable way to tell which victim had paid.</p>
+      <p>In December 2017 the UK and US governments publicly blamed North Korea, pointing to a hacking group often called Lazarus.</p>
+      <p>The simulation is a simplification. Real worms keep scanning until the machine is cleaned or switched off, and real networks have many more ways in and out.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 6 KILL SWITCH ================= -->
+<section class="chapter" id="killswitch" data-title="Kill switch" hidden>
+  <p class="eyebrow">Chapter 6 &middot; The kill switch</p>
+  <h2 tabindex="-1">The $10.69 off switch</h2>
+  <div class="narr">
+    <p>Within hours, security researchers were taking WannaCry apart. A 22-year-old British researcher, <b>Marcus Hutchins</b>, noticed something odd: before doing anything else, WannaCry tried to visit a long, nonsense web address that nobody owned.</p>
+    <p>He registered the address himself, mainly to track the infection. It turned out to be an off switch. Run WannaCry once to see the outbreak, then find the switch in its steps and try again.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 6 &middot; Find the off switch</div>
+    <div class="recipe">
+      <div class="recipe-head"><span>WannaCry &middot; first steps</span><span class="addr-state" id="ks-state"><span class="led"></span><span id="ks-state-t">Address: nobody answers</span></span></div>
+      <ol>
+        <li>Try to visit the web address <button class="domain" type="button" id="ks-domain" aria-describedby="ks-domain-hint">iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</button></li>
+        <li>If the address answers: <b>stop</b>. Do nothing at all.</li>
+        <li>If nobody answers: encrypt every file, demand the ransom, and spread to the next computer.</li>
+      </ol>
+    </div>
+    <p class="hint" id="ks-domain-hint">Click the highlighted address to see if anyone owns it.</p>
+    <div class="registrar" id="ks-reg" hidden>
+      <p><span class="dn">iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com</span><span class="avail">Available</span></p>
+      <p class="price">$10.69</p>
+      <button class="btn" type="button" id="ks-buy">Register it</button>
+    </div>
+    <div class="controls">
+      <button class="btn red" type="button" id="ks-run">Run WannaCry</button>
+      <button class="btn ghost" type="button" id="ks-reset">Reset</button>
+    </div>
+    <svg class="town" id="ks-svg" viewBox="0 0 800 400" role="img" aria-label="The same town of sixty computers. Live counts are listed below the picture."></svg>
+    <div class="stats" id="ks-stats">
+      <span><i class="k red"></i>Encrypted <b data-s="enc">0</b></span>
+      <span><i class="k grey"></i>Worm arrived, then quit <b data-s="asleep">0</b></span>
+      <span><i class="k green"></i>Has the fix <b data-s="patched">0</b></span>
+      <span><i class="k plain"></i>Untouched <b data-s="untouched">0</b></span>
+    </div>
+    <p class="status" id="ks-status" aria-live="polite">Five computers are already infected. Press <b>Run WannaCry</b>.</p>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; Why was there a switch?</summary>
+    <div class="deeper-body">
+      <p>Hutchins wrote up what happened on his blog, MalwareTech. He registered the address to count infections, and only realised afterwards that doing so had switched the worm off.</p>
+      <p>Already-encrypted computers stayed locked. The switch only stopped new infections from going further.</p>
+      <p>A popular theory is that the check was meant to spot security researchers' test machines, which often pretend every web address exists. Nobody outside the group behind WannaCry knows for sure.</p>
+      <p>Within days, copycat versions with different switches, or none, appeared. By then many organisations had installed the fix.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 7 NOTPETYA ================= -->
+<section class="chapter" id="notpetya" data-title="NotPetya" hidden>
+  <p class="eyebrow">Chapter 7 &middot; The sequel</p>
+  <h2 tabindex="-1">Six weeks later: NotPetya</h2>
+  <div class="narr">
+    <p>On <b>27 June 2017</b>, a second attack used EternalBlue, and it was worse. <b>NotPetya</b> looked like ransomware, but its "unlock" process could never work. It was built to destroy.</p>
+    <p>It started in a hacked update for M.E.Doc, accounting software used by many companies in Ukraine. Then it spread with EternalBlue and a second trick: stealing passwords from memory and using them to log into other computers. That trick even worked on computers that had the March fix.</p>
+    <p>Shipping giant <b>Maersk</b>, which carries close to a fifth of the world's shipping, lost almost its entire network. Here's how it got back.</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 7 &middot; Find the survivor</div>
+    <div class="controls"><button class="btn red" type="button" id="np-run">Run NotPetya</button><span class="daycount" id="np-day" hidden></span></div>
+    <p class="status" id="np-status" aria-live="polite">Every office is running normally. Ships are being loaded around the world.</p>
+    <div class="np-grid" id="np-grid"></div>
+    <p class="np-note">Office names are illustrative: Maersk had hundreds of offices. The Ghana office and the UK recovery centre are from the real story.</p>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; How NotPetya worked</summary>
+    <div class="deeper-body">
+      <p>NotPetya was named after an older ransomware called Petya, which it resembled. Researchers soon found it was really a <b>wiper</b>: the ID it showed victims for "unlocking" was random, so even paying couldn't bring files back.</p>
+      <p>It spread with EternalBlue and EternalRomance, plus <b>Mimikatz</b>, a tool that pulls passwords out of a computer's memory. With those passwords it used Windows' own admin tools (PsExec and WMI) to log into other machines, including fully patched ones.</p>
+      <p>It overwrote the start of the hard drive (the master boot record) and encrypted the file table, so infected computers couldn't even start up.</p>
+      <p>Maersk rebuilt about 4,000 servers and 45,000 PCs in roughly ten days, and put the cost at up to $300 million. Total damage worldwide was estimated at about $10 billion, making NotPetya one of the most expensive cyberattacks ever. In February 2018 the UK and US governments blamed the Russian military.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 8 DEFEND ================= -->
+<section class="chapter" id="defend" data-title="Break the chain" hidden>
+  <p class="eyebrow">Chapter 8 &middot; Defence</p>
+  <h2 tabindex="-1">Break the chain</h2>
+  <div class="narr">
+    <p>Every step of the attack needed something to go wrong. Switch on defences and see which links they break. Which single defence matters most?</p>
+  </div>
+  <div class="board">
+    <div class="tab">Game 8 &middot; Break the chain</div>
+    <div class="chain" id="chain">
+      <div class="link" data-link="0"><svg viewBox="0 0 72 42" aria-hidden="true"><rect class="lk" x="5" y="6" width="62" height="30" rx="15"/></svg><span class="link-n">STEP 1</span><span class="link-t">A stranger can reach door 445</span><span class="by"></span></div>
+      <div class="link" data-link="1"><svg viewBox="0 0 72 42" aria-hidden="true"><rect class="lk" x="5" y="6" width="62" height="30" rx="15"/></svg><span class="link-n">STEP 2</span><span class="link-t">Old SMBv1 packages are still accepted</span><span class="by"></span></div>
+      <div class="link" data-link="2"><svg viewBox="0 0 72 42" aria-hidden="true"><rect class="lk" x="5" y="6" width="62" height="30" rx="15"/></svg><span class="link-n">STEP 3</span><span class="link-t">The stamp bug isn't fixed</span><span class="by"></span></div>
+      <div class="link" data-link="3"><svg viewBox="0 0 72 42" aria-hidden="true"><rect class="lk" x="5" y="6" width="62" height="30" rx="15"/></svg><span class="link-n">STEP 4</span><span class="link-t">It spreads freely inside the network</span><span class="by"></span></div>
+      <div class="link" data-link="4"><svg viewBox="0 0 72 42" aria-hidden="true"><rect class="lk" x="5" y="6" width="62" height="30" rx="15"/></svg><span class="link-n">STEP 5</span><span class="link-t">The files are gone for good</span><span class="by"></span></div>
+    </div>
+    <fieldset class="defences" id="defences">
+      <legend>Your defences</legend>
+      <label class="toggle" for="d-firewall"><input type="checkbox" id="d-firewall" data-breaks="0"><span>Block port 445 from the internet<small>A firewall at the network's edge</small></span></label>
+      <label class="toggle" for="d-smb1"><input type="checkbox" id="d-smb1" data-breaks="1"><span>Switch off SMBv1<small>Stop accepting the old packing lists</small></span></label>
+      <label class="toggle" for="d-update"><input type="checkbox" id="d-update" data-breaks="2"><span>Install the update (MS17-010)<small>Give the clerk a five-digit stamp</small></span></label>
+      <label class="toggle" for="d-zones"><input type="checkbox" id="d-zones" data-breaks="3"><span>Split the network into zones<small>Walls between departments</small></span></label>
+      <label class="toggle" for="d-admin"><input type="checkbox" id="d-admin" data-breaks="3"><span>Limit admin passwords<small>No single key that opens every computer</small></span></label>
+      <label class="toggle" for="d-backup"><input type="checkbox" id="d-backup" data-breaks="4"><span>Keep offline backups<small>Copies the malware can't reach</small></span></label>
+    </fieldset>
+    <div class="verdict bad" id="chain-verdict" aria-live="polite"></div>
+  </div>
+  <div class="tips">
+    <div class="tipcard">
+      <h3>At home</h3>
+      <ul>
+        <li>Leave automatic updates on, and restart when your computer asks.</li>
+        <li>If your computer no longer gets security updates (Windows XP, Windows 7, and Windows 10 since October 2025), plan to upgrade.</li>
+        <li>Keep a backup on a drive you unplug, or in a cloud service that keeps old versions.</li>
+        <li>If ransomware hits, don't pay. Disconnect the device and report it to the police or your national cybercrime unit.</li>
+      </ul>
+    </div>
+    <div class="tipcard">
+      <h3>At work</h3>
+      <ul>
+        <li>Patch fast, especially bugs that let attackers in without a password.</li>
+        <li>Switch off SMBv1 and never expose port 445 to the internet.</li>
+        <li>Split the network into zones and limit where admin accounts can log in.</li>
+        <li>Keep offline backups, and practise restoring from them.</li>
+        <li>Keep a list of every device, including the old ones nobody remembers.</li>
+      </ul>
+    </div>
+  </div>
+  <details class="deeper">
+    <summary>Go deeper &middot; The defences in detail</summary>
+    <div class="deeper-body">
+      <p><b>MS17-010</b> is the fix for this bug. Microsoft's bulletin lists the update for each Windows version.</p>
+      <p>Microsoft recommends switching <b>SMBv1</b> off. Since late 2017 (Windows 10 version 1709), new Windows installations leave it out by default.</p>
+      <p><b>Port 445</b> should almost never be reachable from the internet. Block it at the edge of the network.</p>
+      <p><b>Segmentation</b> splits a network into zones so a problem in one can't spread freely to the others. Limiting admin accounts stops tricks like NotPetya's stolen passwords from unlocking everything.</p>
+      <p><b>Offline backups</b> are copies kept disconnected from the network, out of the malware's reach. A backup only counts if you've tested restoring from it.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= 9 TIMELINE ================= -->
+<section class="chapter" id="timeline" data-title="Timeline and sources" hidden>
+  <p class="eyebrow">Chapter 9 &middot; The record</p>
+  <h2 tabindex="-1">What happened, when</h2>
+  <ol class="timeline">
+    <li><time datetime="2016-08">August 2016</time><p>The <b>Shadow Brokers</b> appear online, offering hacking tools they say were stolen from the "Equation Group", a team widely linked to the NSA.<a class="ref" href="#src-8">[8]</a></p></li>
+    <li><time datetime="2017-02">February 2017</time><p>Microsoft postpones its monthly security updates, which almost never happens.</p></li>
+    <li><time datetime="2017-03-14">14 March 2017</time><p>Microsoft releases <b>MS17-010</b>, fixing EternalBlue's bug and five related ones.<a class="ref" href="#src-1">[1]</a><a class="ref" href="#src-2">[2]</a></p></li>
+    <li><time datetime="2017-04-14">14 April 2017</time><p>The Shadow Brokers publish EternalBlue, DoublePulsar and other tools for anyone to download.<a class="ref" href="#src-8">[8]</a></p></li>
+    <li class="hot"><time datetime="2017-05-12">12 May 2017</time><p><b>WannaCry</b> spreads worldwide. That afternoon, Marcus Hutchins registers the kill-switch address and the spread slows.<a class="ref" href="#src-5">[5]</a><a class="ref" href="#src-7">[7]</a></p></li>
+    <li><time datetime="2017-05-13">13 May 2017</time><p>Microsoft releases emergency fixes for Windows XP and other versions it no longer supported.<a class="ref" href="#src-3">[3]</a></p></li>
+    <li><time datetime="2017-05-14">14 May 2017</time><p>Microsoft president Brad Smith calls the leak a wake-up call for governments that stockpile flaws.<a class="ref" href="#src-4">[4]</a></p></li>
+    <li class="hot"><time datetime="2017-06-27">27 June 2017</time><p><b>NotPetya</b> starts in Ukraine and wipes computers at Maersk, Merck, FedEx's TNT Express and many others.<a class="ref" href="#src-10">[10]</a></p></li>
+    <li><time datetime="2017-10">October 2017</time><p>The UK National Audit Office reports on WannaCry's impact on the NHS.<a class="ref" href="#src-6">[6]</a> New Windows 10 installations stop including SMBv1 by default.<a class="ref" href="#src-12">[12]</a></p></li>
+    <li><time datetime="2017-12-19">19 December 2017</time><p>The UK and US governments publicly blame North Korea for WannaCry.<a class="ref" href="#src-11">[11]</a></p></li>
+    <li><time datetime="2018-02-15">15 February 2018</time><p>The UK and US governments blame the Russian military for NotPetya.<a class="ref" href="#src-9">[9]</a></p></li>
+  </ol>
+
+  <h3 class="sec">Sources</h3>
+  <ol class="sources">
+    <li id="src-1"><a href="https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010" target="_blank" rel="noopener">Microsoft Security Bulletin MS17-010 (Critical)</a> <span class="pub">Microsoft</span></li>
+    <li id="src-2"><a href="https://nvd.nist.gov/vuln/detail/CVE-2017-0144" target="_blank" rel="noopener">CVE-2017-0144 detail</a> <span class="pub">US National Vulnerability Database</span></li>
+    <li id="src-3"><a href="https://msrc.microsoft.com/blog/2017/05/customer-guidance-for-wannacrypt-attacks/" target="_blank" rel="noopener">Customer guidance for WannaCrypt attacks</a> <span class="pub">Microsoft Security Response Center</span></li>
+    <li id="src-4"><a href="https://blogs.microsoft.com/on-the-issues/2017/05/14/need-urgent-collective-action-keep-people-safe-online-lessons-last-weeks-cyberattack/" target="_blank" rel="noopener">The need for urgent collective action to keep people safe online</a> <span class="pub">Brad Smith, Microsoft</span></li>
+    <li id="src-5"><a href="https://www.cisa.gov/news-events/alerts/2017/05/12/indicators-associated-wannacry-ransomware" target="_blank" rel="noopener">Indicators associated with WannaCry ransomware</a> <span class="pub">US CISA</span></li>
+    <li id="src-6"><a href="https://www.nao.org.uk/reports/investigation-wannacry-cyber-attack-and-the-nhs/" target="_blank" rel="noopener">Investigation: WannaCry cyber attack and the NHS</a> <span class="pub">UK National Audit Office</span></li>
+    <li id="src-7"><a href="https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html" target="_blank" rel="noopener">How to accidentally stop a global cyber attack</a> <span class="pub">Marcus Hutchins, MalwareTech</span></li>
+    <li id="src-8"><a href="https://research.checkpoint.com/2017/eternalblue-everything-know/" target="_blank" rel="noopener">EternalBlue: everything there is to know</a> <span class="pub">Check Point Research</span></li>
+    <li id="src-9"><a href="https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" target="_blank" rel="noopener">Russian military "almost certainly" responsible for destructive 2017 cyber attack</a> <span class="pub">UK NCSC</span></li>
+    <li id="src-10"><a href="https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/" target="_blank" rel="noopener">The untold story of NotPetya, the most devastating cyberattack in history</a> <span class="pub">Andy Greenberg, Wired</span></li>
+    <li id="src-11"><a href="https://www.gov.uk/government/news/foreign-office-minister-condemns-north-korean-actor-for-wannacry-attacks" target="_blank" rel="noopener">Foreign Office Minister condemns North Korean actor for WannaCry attacks</a> <span class="pub">UK Government</span></li>
+    <li id="src-12"><a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows" target="_blank" rel="noopener">SMBv1 is not installed by default in Windows 10 version 1709 and later</a> <span class="pub">Microsoft</span></li>
+  </ol>
+  <p class="credits">Part of <a href="index.html">Byte-Sized Breaches</a>. The step-by-step, play-to-learn format is inspired by Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener">The Evolution of Trust</a>. Simulations are simplified models for learning, not exact replays.</p>
+</section>
+
+</main>
+<script src="eternalblue.js"></script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Byte-Sized Breaches</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Famous cyberattacks and security bugs, explained with small browser games. No tech background needed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Stencil+Display:wght@900&display=swap">
+<style>
+/* Layout: left-aligned masthead, one wide "now playing" cartridge, then a three-column shelf of upcoming cartridges. Each cartridge wears its own incident's colours. */
+:root{
+  --bg:#e8ebf3; --surface:#f5f6fb; --fg:#141a2e; --muted:#50597a; --line:#c6ccde; --accent:#2c43c7;
+  --font-display:"Bungee","Arial Black",Impact,sans-serif;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-eb:"Big Shoulders Stencil Display","Arial Narrow",Impact,sans-serif;
+  /* cartridge artwork: fixed colours, readable on either theme */
+  --eb-shell:#0b1a4b; --eb-label:#eedfb9; --eb-ink:#2a2312; --eb-hi:#2a5ce0; --eb-red:#cf3527; --eb-cream:#fbf6e8;
+  --hb-shell:#7a1828; --hb-label:#ffd9d2; --hb-ink:#3d0a13; --hb-hi:#d22a43;
+  --l4-shell:#6a370e; --l4-label:#ffdfb4; --l4-ink:#3a1d05; --l4-hi:#c46a1d;
+  --sx-shell:#1d3b28; --sx-label:#d3eac3; --sx-ink:#0f2416; --sx-hi:#3d8a52;
+  --mi-shell:#382062; --mi-label:#e6daff; --mi-ink:#1e0f3b; --mi-hi:#7a4fd0;
+  --cp-shell:#574708; --cp-label:#f7e9a8; --cp-ink:#2e2503; --cp-hi:#a8870f;
+  --xz-shell:#0d4646; --xz-label:#c7f0e9; --xz-ink:#062626; --xz-hi:#1f8c80;
+  --grip-text:rgba(255,255,255,.82);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0f1220;--surface:#171b2d;--fg:#eceef8;--muted:#a3abc8;--line:#2b3149;--accent:#9eabff;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0f1220;--surface:#171b2d;--fg:#eceef8;--muted:#a3abc8;--line:#2b3149;--accent:#9eabff;color-scheme:dark}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1.06rem/1.55 var(--font-body)}
+[hidden]{display:none!important}
+img,svg{max-width:100%}
+a{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:40px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+/* masthead */
+.mast{display:flex;flex-direction:column;gap:14px;max-width:760px}
+.mast>*{margin:0}
+.kicker{font:700 .82rem/1.2 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mast h1{font:400 clamp(2.4rem,8.2vw,5.2rem)/.95 var(--font-display);letter-spacing:-.01em}
+.mast h1 .px{display:inline-block;width:.32em;height:.32em;background:var(--accent);margin-left:.08em;vertical-align:.05em}
+.intro{font-size:1.2rem;max-width:58ch;color:var(--fg)}
+.how{list-style:none;padding:0;margin:4px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.how li{font:700 .9rem/1 var(--font-body);padding:9px 13px;border:2px solid var(--line);border-radius:999px;color:var(--muted)}
+
+/* shelves */
+.shelf-h{font:400 1rem/1 var(--font-display);letter-spacing:.06em;color:var(--muted);display:flex;align-items:center;gap:14px}
+.shelf-h::after{content:"";flex:1;height:2px;background:var(--line)}
+section{display:flex;flex-direction:column;gap:18px}
+
+/* cartridge */
+.cart{--notch:26px;position:relative;display:flex;flex-direction:column;background:var(--shell);color:var(--ink);border-radius:10px 0 8px 8px;padding:12px 12px 0;text-decoration:none;
+  clip-path:polygon(0 0,calc(100% - var(--notch)) 0,100% var(--notch),100% 100%,0 100%);transition:transform .18s ease}
+.label{background:var(--label);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.label>*{margin:0}
+.grip{height:40px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 4px;
+  background:repeating-linear-gradient(90deg,transparent 0 9px,rgba(255,255,255,.08) 9px 12px);
+  font:700 .74rem/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--grip-text)}
+.case-no{font:700 .76rem/1.2 var(--font-body);letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.cart h3{font:400 1.45rem/1.05 var(--font-display);letter-spacing:-.01em}
+.hook{font-size:1rem;line-height:1.45}
+.idea{font-size:.9rem;line-height:1.4;border-top:2px dashed currentColor;padding-top:8px;margin-top:auto!important;opacity:.85}
+.emb{width:100%;height:auto;max-height:110px;display:block}
+
+.eb{--shell:var(--eb-shell);--label:var(--eb-label);--ink:var(--eb-ink)}
+.hb{--shell:var(--hb-shell);--label:var(--hb-label);--ink:var(--hb-ink)}
+.l4{--shell:var(--l4-shell);--label:var(--l4-label);--ink:var(--l4-ink)}
+.sx{--shell:var(--sx-shell);--label:var(--sx-label);--ink:var(--sx-ink)}
+.mi{--shell:var(--mi-shell);--label:var(--mi-label);--ink:var(--mi-ink)}
+.cp{--shell:var(--cp-shell);--label:var(--cp-label);--ink:var(--cp-ink)}
+.xz{--shell:var(--xz-shell);--label:var(--xz-label);--ink:var(--xz-ink)}
+
+/* featured */
+.feature{--notch:40px}
+.feature .label{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:12px 28px;align-items:center;padding:22px clamp(16px,3vw,32px)}
+.feature .emb{max-height:none}
+.feature .txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.feature .txt>*{margin:0}
+.feature h3{font:900 clamp(3rem,8vw,5.4rem)/.85 var(--font-eb);text-transform:uppercase;letter-spacing:0}
+.feature h3 span{color:var(--eb-hi)}
+.feature .hook{font-size:1.15rem}
+.tags{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.tags li{font:700 .8rem/1 var(--font-body);padding:7px 10px;border-radius:4px;background:var(--eb-cream);border:1.5px solid var(--eb-ink)}
+.play{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--eb-red);color:var(--eb-cream);font:400 1.05rem/1 var(--font-display);padding:14px 20px;border-radius:6px;letter-spacing:.02em}
+.feature:hover{transform:translateY(-3px)}
+.feature:hover .play{background:var(--eb-shell)}
+.feature:focus-visible{outline:none}
+.feature:focus-visible .label{outline:4px solid var(--eb-hi);outline-offset:-4px}
+@media (max-width:760px){.feature .label{grid-template-columns:minmax(0,1fr)}.feature .emb{max-width:420px}}
+
+.shelf{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.shelf{grid-template-columns:minmax(0,1fr)}}
+.soon .label{min-height:100%}
+
+/* emblem paint */
+.f-shell{fill:var(--shell)} .f-ink{fill:var(--ink)} .f-label{fill:var(--label)} .s-ink{stroke:var(--ink)}
+.f-hi{fill:var(--hi)} .s-hi{stroke:var(--hi)}
+.hb{--hi:var(--hb-hi)} .l4{--hi:var(--l4-hi)} .sx{--hi:var(--sx-hi)} .mi{--hi:var(--mi-hi)} .cp{--hi:var(--cp-hi)} .xz{--hi:var(--xz-hi)} .eb{--hi:var(--eb-hi)}
+.f-red{fill:var(--eb-red)} .f-cream{fill:var(--eb-cream)} .f-navy{fill:var(--eb-shell)}
+.emb-t{font:700 15px var(--font-body)}
+.eb-plate{font:700 22px var(--font-body);fill:var(--eb-cream)}
+.flyer{animation:bob 3s ease-in-out infinite}
+.flyer.d2{animation-delay:-1s}.flyer.d3{animation-delay:-2s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;border-top:2px solid var(--line);padding-top:28px}
+.about h2{font:400 1.05rem/1.2 var(--font-display);letter-spacing:.04em;margin-bottom:6px}
+.about p{margin:0;color:var(--muted)}
+footer{font-size:.92rem;color:var(--muted)}
+footer p{margin:0}
+
+@media (prefers-reduced-motion: reduce){.cart,.flyer{transition:none;animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <p class="kicker">An arcade of real cyber incidents</p>
+    <h1>Byte-Sized Breaches<span class="px" aria-hidden="true"></span></h1>
+    <p class="intro">Famous cyberattacks and security bugs, explained with small games you play in your browser. No tech background needed. Each case has its own look, built around its story.</p>
+    <ul class="how" aria-label="What to expect">
+      <li>Short chapters</li><li>Games, not lectures</li><li>Optional deep dives</li><li>Real sources</li>
+    </ul>
+  </header>
+
+  <section aria-labelledby="now-h">
+    <h2 class="shelf-h" id="now-h">Now playing</h2>
+    <a class="cart feature eb" href="eternalblue.html" aria-label="Play EternalBlue: case 01, 2017. About 15 minutes.">
+      <div class="label">
+        <svg class="emb" viewBox="0 0 300 200" aria-hidden="true">
+          <rect class="f-navy" x="168" y="18" width="112" height="182" rx="6"/>
+          <rect class="f-label" x="186" y="44" width="76" height="40" rx="4"/>
+          <text class="emb-t" x="224" y="70" text-anchor="middle" style="fill:var(--eb-ink);font-size:20px">445</text>
+          <rect class="f-cream" x="196" y="132" width="56" height="9" rx="2"/>
+          <circle class="f-cream" cx="262" cy="160" r="4"/>
+          <g class="flyer"><g transform="translate(18,40)"><rect class="f-cream" width="52" height="34" rx="3" style="stroke:var(--eb-ink);stroke-width:2"/><path d="M2 2 L26 19 L50 2" fill="none" style="stroke:var(--eb-ink);stroke-width:2"/></g></g>
+          <g class="flyer d2"><g transform="translate(66,94)"><rect class="f-cream" width="52" height="34" rx="3" style="stroke:var(--eb-ink);stroke-width:2"/><path d="M2 2 L26 19 L50 2" fill="none" style="stroke:var(--eb-ink);stroke-width:2"/></g></g>
+          <g class="flyer d3"><g transform="translate(24,142) rotate(-8)"><rect class="f-red" width="60" height="40" rx="3"/><path d="M2 2 L30 22 L58 2" fill="none" style="stroke:var(--eb-cream);stroke-width:2.4"/></g></g>
+          <path d="M126 112 C 150 120, 168 130, 190 136" fill="none" style="stroke:var(--eb-ink);stroke-width:2;stroke-dasharray:5 5"/>
+        </svg>
+        <div class="txt">
+          <p class="case-no">Case 01 &middot; 2017 &middot; Windows</p>
+          <h3>Eternal<span>Blue</span></h3>
+          <p class="hook">How one miscounted number in Windows let a leaked spy tool unleash WannaCry and NotPetya on hospitals, factories and shipping lines.</p>
+          <ul class="tags"><li>8 small games</li><li>About 15 minutes</li><li>Beginner friendly</li></ul>
+          <span class="play">Play &rarr;</span>
+        </div>
+      </div>
+      <div class="grip"><span>Byte-Sized Breaches</span><span>01</span></div>
+    </a>
+  </section>
+
+  <section aria-labelledby="soon-h">
+    <h2 class="shelf-h" id="soon-h">Coming soon</h2>
+    <ul class="shelf">
+      <li class="cart soon hb">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <path class="f-hi" d="M120 96 C 70 64, 52 44, 60 26 C 68 8, 98 8, 120 30 C 142 8, 172 8, 180 26 C 188 44, 170 64, 120 96 Z"/>
+            <path class="f-label" d="M84 38 l14 0 l6 -10 l8 22 l6 -12 l38 0" style="fill:none;stroke:var(--hb-label);stroke-width:5;stroke-linejoin:round;stroke-linecap:round"/>
+            <path class="f-hi" d="M150 92 q6 10 0 14 q-6 -4 0 -14z"/>
+          </svg>
+          <p class="case-no">2014 &middot; OpenSSL</p>
+          <h3>Heartbleed</h3>
+          <p class="hook">Ask a server to repeat one word, and it sends back its secrets.</p>
+          <p class="idea"><b>Planned game:</b> chat with a server that never checks how long your word really is.</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>02</span></div>
+      </li>
+      <li class="cart soon l4">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <rect class="f-hi" x="34" y="34" width="160" height="50" rx="25"/>
+            <ellipse class="f-label" cx="194" cy="59" rx="18" ry="25" style="stroke:var(--l4-ink);stroke-width:3"/>
+            <ellipse cx="194" cy="59" rx="9" ry="13" fill="none" style="stroke:var(--l4-ink);stroke-width:2"/>
+            <text class="emb-t" x="104" y="66" text-anchor="middle" style="fill:var(--l4-label);font-size:20px">${&hellip;}</text>
+          </svg>
+          <p class="case-no">2021 &middot; Log4j</p>
+          <h3>Log4Shell</h3>
+          <p class="hook">Typing one strange line into a chat box could take over a server.</p>
+          <p class="idea"><b>Planned game:</b> feed messages to a logbook that obeys whatever it writes down.</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>03</span></div>
+      </li>
+      <li class="cart soon sx">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <rect class="f-hi" x="62" y="16" width="26" height="80" rx="13"/>
+            <rect class="f-hi" x="107" y="16" width="26" height="80" rx="13"/>
+            <rect class="f-hi" x="152" y="16" width="26" height="80" rx="13"/>
+            <path d="M40 100 H200" style="stroke:var(--sx-ink);stroke-width:4"/>
+            <path d="M120 40 a12 12 0 1 1 -10 6" fill="none" style="stroke:var(--sx-label);stroke-width:3"/>
+            <path d="M107 42 l4 6 l5 -5z" style="fill:var(--sx-label)"/>
+          </svg>
+          <p class="case-no">2010 &middot; Industrial control</p>
+          <h3>Stuxnet</h3>
+          <p class="hook">A computer worm that quietly wrecked uranium centrifuges in Iran.</p>
+          <p class="idea"><b>Planned game:</b> run a control room while the gauges lie to you.</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>04</span></div>
+      </li>
+      <li class="cart soon mi">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <circle class="f-hi" cx="120" cy="50" r="32"/>
+            <circle class="f-label" cx="120" cy="50" r="15"/>
+            <circle class="f-ink" cx="120" cy="50" r="7"/>
+            <path d="M120 82 V98 M100 100 H140" style="stroke:var(--mi-ink);stroke-width:5;stroke-linecap:round"/>
+            <path d="M168 34 a22 22 0 0 1 0 32 M180 24 a36 36 0 0 1 0 52" fill="none" style="stroke:var(--mi-hi);stroke-width:4;stroke-linecap:round"/>
+          </svg>
+          <p class="case-no">2016 &middot; Internet of Things</p>
+          <h3>Mirai</h3>
+          <p class="hook">Hacked webcams and routers knocked big websites offline.</p>
+          <p class="idea"><b>Planned game:</b> see how factory-default passwords turn gadgets into an army.</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>05</span></div>
+      </li>
+      <li class="cart soon cp">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <rect class="f-hi" x="20" y="54" width="200" height="22" rx="4"/>
+            <rect class="f-ink" x="104" y="46" width="32" height="38" rx="4"/>
+            <path d="M120 46 V24" style="stroke:var(--cp-ink);stroke-width:5"/>
+            <circle cx="120" cy="20" r="14" fill="none" style="stroke:var(--cp-ink);stroke-width:5"/>
+            <path d="M106 20 H134 M120 6 V34" style="stroke:var(--cp-ink);stroke-width:3"/>
+          </svg>
+          <p class="case-no">2021 &middot; Ransomware</p>
+          <h3>Colonial Pipeline</h3>
+          <p class="hook">One old password with no second check shut down a fuel pipeline.</p>
+          <p class="idea"><b>Planned game:</b> make the call. Shut the pipeline, or keep the fuel flowing?</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>06</span></div>
+      </li>
+      <li class="cart soon xz">
+        <div class="label">
+          <svg class="emb" viewBox="0 0 240 110" aria-hidden="true">
+            <rect class="f-hi" x="70" y="30" width="100" height="70" rx="6"/>
+            <rect class="f-ink" x="64" y="20" width="112" height="18" rx="4"/>
+            <rect class="f-label" x="112" y="20" width="16" height="80"/>
+            <circle cx="150" cy="70" r="9" fill="none" style="stroke:var(--xz-label);stroke-width:4"/>
+            <path d="M159 70 H180 M172 70 v8 M178 70 v6" style="stroke:var(--xz-label);stroke-width:4"/>
+          </svg>
+          <p class="case-no">2024 &middot; Open source</p>
+          <h3>xz Utils</h3>
+          <p class="hook">A friendly volunteer spent two years planting a back door.</p>
+          <p class="idea"><b>Planned game:</b> spot the long con hiding in an open-source project's inbox.</p>
+        </div>
+        <div class="grip"><span>Coming soon</span><span>07</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <div class="about">
+    <div><h2>Why games?</h2><p>Security stories are usually told with jargon. Here you push the buttons yourself: send the packets, aim the overflow, release the worm, and find the fix.</p></div>
+    <div><h2>Who it's for</h2><p>Anyone. The main path uses plain language and everyday metaphors. "Go deeper" notes add the real technical detail for people who want it.</p></div>
+    <div><h2>How it's built</h2><p>Every case is a single self-contained page with its own design, so each one can look like the world of its story.</p></div>
+  </div>
+
+  <footer><p>Inspired by explorable explanations such as Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener">The Evolution of Trust</a>.</p></footer>
+</div>
+</body>
+</html>
