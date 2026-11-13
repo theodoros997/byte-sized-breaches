@@ -6,9 +6,11 @@ Famous cyberattacks and security bugs, explained with small browser games. The m
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The hub: a shelf of "cartridges", one per incident. EternalBlue is playable; the rest are marked *coming soon*. |
+| `index.html` | The hub: a shelf of "cartridges", one per incident. EternalBlue and Pegasus are playable; the rest are marked *coming soon*. |
 | `eternalblue.html` | Case 01. Markup, story text and all styles for the EternalBlue explainer. |
 | `eternalblue.js` | Case 01. Chapter navigation and the eight games. Plain JavaScript, no libraries. |
+| `pegasus.html` | Case 02. Markup, story text and all styles for the Pegasus explainer. |
+| `pegasus.js` | Case 02. Chapter navigation and the eight games. |
 
 Everything is static. There is no build step and nothing to install. Fonts come from Google Fonts.
 
@@ -43,6 +45,25 @@ Each chapter has its own URL (`eternalblue.html#outbreak`, `#killswitch` and so 
 
 **Look and feel:** a night-blue mailroom with manila "case board" game surfaces, rubber-stamp red, and a stencil display face (Big Shoulders Stencil) that suggests shipping crates and mail stamps. Body text is Source Sans 3 and technical notes use IBM Plex Mono.
 
+## The Pegasus case
+
+Ten chapters about NSO Group's Pegasus spyware. The look is a night sky: progress is drawn as a constellation, the hero is the real Pegasus constellation (Scheat, Markab, Algenib, Alpheratz, Enif), and every game runs on a phone screen. Gold means starlight and safety; magenta means the spy. Fonts: Marcellus (display), Figtree (body), JetBrains Mono (logs).
+
+Central metaphor: a phone is a house with many doors, and some doors open by themselves. That sets up the difference between one-click and zero-click attacks.
+
+| # | Chapter | Game | What it teaches |
+| --- | --- | --- | --- |
+| 0 | Start | n/a | Title screen |
+| 1 | Many doors | Who opens the door? | Attack surface: which things a phone processes without a tap |
+| 2 | One tap (2016) | To tap or not to tap | Ahmed Mansoor's texts, the Trident zero-days, why reporting helps |
+| 3 | Zero clicks (2019) | Incoming call | The WhatsApp missed-call bug: no choice could stop it |
+| 4 | The picture computer (2021) | Build a computer from pixels | FORCEDENTRY: AND/OR/XOR on pixels, up to a half adder |
+| 5 | What it sees | The operator's view | What spyware collects, and why encryption doesn't stop it |
+| 6 | Who was watched | The forensic check | The Pegasus Project: 50,000 numbers, 67 phones checked, 37 with traces |
+| 7 | The hunters | Spot the impostors | Fake process names (bh, roleaccountd, stagingd) and how investigators work |
+| 8 | Staying safe | Could you have dodged it? | Updates, restarts, Lockdown Mode, threat warnings |
+| 9 | Timeline | n/a | Dated timeline and 12 sources |
+
 ## Adding a new case
 
 1. Copy the structure, not the style. Make `heartbleed.html` + `heartbleed.js`, with chapters as `<section class="chapter" id="..." data-title="...">`. The router at the top of `eternalblue.js` can be reused as is.
@@ -53,5 +74,6 @@ Each chapter has its own URL (`eternalblue.html#outbreak`, `#killswitch` and so 
 ## Accuracy notes
 
 - The simulations are teaching models, not replays. Each says so on the page.
-- Facts and figures come from the sources listed in the Timeline chapter (Microsoft, NVD, CISA, UK NAO, NCSC, MalwareTech, Check Point, Wired). The source links weren't re-checked from the build environment, so it's worth clicking through them once before sharing widely.
+- Facts and figures come from the sources listed in each case's Timeline chapter (for EternalBlue: Microsoft, NVD, CISA, UK NAO, NCSC, MalwareTech, Check Point, Wired; for Pegasus: Citizen Lab, Amnesty International, Forbidden Stories, Google Project Zero, Apple, the US Commerce Department, NVD). The source links weren't re-checked from the build environment, so it's worth clicking through them once before sharing widely.
+- In the Pegasus case, Lena, her messages and the example link are invented.
 - Office names in the NotPetya game are illustrative. The Ghana survivor and the UK recovery centre are from the real story.

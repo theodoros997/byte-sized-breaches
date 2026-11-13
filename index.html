@@ -8,7 +8,7 @@
 <meta name="description" content="Famous cyberattacks and security bugs, explained with small browser games. No tech background needed.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Stencil+Display:wght@900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Stencil+Display:wght@900&family=Marcellus&display=swap">
 <style>
 /* Layout: left-aligned masthead, one wide "now playing" cartridge, then a three-column shelf of upcoming cartridges. Each cartridge wears its own incident's colours. */
 :root{
@@ -16,8 +16,10 @@
   --font-display:"Bungee","Arial Black",Impact,sans-serif;
   --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-eb:"Big Shoulders Stencil Display","Arial Narrow",Impact,sans-serif;
+  --font-pg:"Marcellus",Georgia,serif;
   /* cartridge artwork: fixed colours, readable on either theme */
   --eb-shell:#0b1a4b; --eb-label:#eedfb9; --eb-ink:#2a2312; --eb-hi:#2a5ce0; --eb-red:#cf3527; --eb-cream:#fbf6e8;
+  --pg-shell:#050412; --pg-label:#161236; --pg-ink:#f4f1ff; --pg-gold:#e9c46b; --pg-dim:#a98b45; --pg-spy:#ff3f78;
   --hb-shell:#7a1828; --hb-label:#ffd9d2; --hb-ink:#3d0a13; --hb-hi:#d22a43;
   --l4-shell:#6a370e; --l4-label:#ffdfb4; --l4-ink:#3a1d05; --l4-hi:#c46a1d;
   --sx-shell:#1d3b28; --sx-label:#d3eac3; --sx-ink:#0f2416; --sx-hi:#3d8a52;
@@ -69,6 +71,7 @@ section{display:flex;flex-direction:column;gap:18px}
 .emb{width:100%;height:auto;max-height:110px;display:block}
 
 .eb{--shell:var(--eb-shell);--label:var(--eb-label);--ink:var(--eb-ink)}
+.pg{--shell:var(--pg-shell);--label:var(--pg-label);--ink:var(--pg-ink)}
 .hb{--shell:var(--hb-shell);--label:var(--hb-label);--ink:var(--hb-ink)}
 .l4{--shell:var(--l4-shell);--label:var(--l4-label);--ink:var(--l4-ink)}
 .sx{--shell:var(--sx-shell);--label:var(--sx-label);--ink:var(--sx-ink)}
@@ -93,6 +96,19 @@ section{display:flex;flex-direction:column;gap:18px}
 .feature:focus-visible{outline:none}
 .feature:focus-visible .label{outline:4px solid var(--eb-hi);outline-offset:-4px}
 @media (max-width:760px){.feature .label{grid-template-columns:minmax(0,1fr)}.feature .emb{max-width:420px}}
+.now{display:flex;flex-direction:column;gap:22px}
+.pg h3{font:400 clamp(3rem,8vw,5.2rem)/.95 var(--font-pg);text-transform:uppercase;letter-spacing:.12em;color:var(--pg-ink)}
+.pg h3 span{color:var(--pg-gold)}
+.pg .tags li{background:transparent;border-color:var(--pg-gold);color:var(--pg-ink)}
+.pg .play{background:var(--pg-gold);color:var(--pg-shell)}
+.pg:hover .play{background:var(--pg-ink)}
+.pg:focus-visible .label{outline-color:var(--pg-gold)}
+.pg-line{stroke:var(--pg-dim);stroke-width:1.6;fill:none}
+.pg-star{fill:var(--pg-gold)}
+.pg-faint{fill:var(--pg-ink);opacity:.45}
+.pg-phone{fill:var(--pg-shell);stroke:var(--pg-gold);stroke-width:2}
+.pg-rec{fill:var(--pg-spy);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 
 .shelf{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 @media (max-width:900px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -116,7 +132,7 @@ section{display:flex;flex-direction:column;gap:18px}
 footer{font-size:.92rem;color:var(--muted)}
 footer p{margin:0}
 
-@media (prefers-reduced-motion: reduce){.cart,.flyer{transition:none;animation:none}}
+@media (prefers-reduced-motion: reduce){.cart,.flyer,.pg-rec{transition:none;animation:none}}
 </style>
 </head>
 <body>
@@ -132,6 +148,7 @@ footer p{margin:0}
 
   <section aria-labelledby="now-h">
     <h2 class="shelf-h" id="now-h">Now playing</h2>
+    <div class="now">
     <a class="cart feature eb" href="eternalblue.html" aria-label="Play EternalBlue: case 01, 2017. About 15 minutes.">
       <div class="label">
         <svg class="emb" viewBox="0 0 300 200" aria-hidden="true">
@@ -155,6 +172,26 @@ footer p{margin:0}
       </div>
       <div class="grip"><span>Byte-Sized Breaches</span><span>01</span></div>
     </a>
+    <a class="cart feature pg" href="pegasus.html" aria-label="Play Pegasus: case 02, 2016 to 2023. About 15 minutes.">
+      <div class="label">
+        <svg class="emb" viewBox="0 0 300 200" aria-hidden="true">
+          <circle class="pg-faint" cx="30" cy="30" r="1.2"/><circle class="pg-faint" cx="280" cy="24" r="1"/><circle class="pg-faint" cx="96" cy="182" r="1.3"/><circle class="pg-faint" cx="250" cy="176" r="1"/><circle class="pg-faint" cx="150" cy="16" r="1"/><circle class="pg-faint" cx="22" cy="120" r="1"/>
+          <path class="pg-line" d="M246 46 L120 52 L134 150 L252 144 Z M120 52 L86 26 L46 18 M134 150 L88 144 L58 160 L22 182"/>
+          <rect class="pg-phone" x="164" y="64" width="54" height="96" rx="11"/>
+          <circle class="pg-rec" cx="206" cy="76" r="4"/>
+          <circle class="pg-star" cx="246" cy="46" r="4"/><circle class="pg-star" cx="120" cy="52" r="4"/><circle class="pg-star" cx="134" cy="150" r="4"/><circle class="pg-star" cx="252" cy="144" r="3.6"/><circle class="pg-star" cx="86" cy="26" r="2.6"/><circle class="pg-star" cx="46" cy="18" r="2"/><circle class="pg-star" cx="88" cy="144" r="2.4"/><circle class="pg-star" cx="58" cy="160" r="2.2"/><circle class="pg-star" cx="22" cy="182" r="3.6"/>
+        </svg>
+        <div class="txt">
+          <p class="case-no">Case 02 &middot; 2016&ndash;2023 &middot; Phones</p>
+          <h3>Pega<span>sus</span></h3>
+          <p class="hook">The spyware that could take over a phone without a single tap, and how researchers caught it on the phones of journalists and activists.</p>
+          <ul class="tags"><li>8 small games</li><li>About 15 minutes</li><li>Beginner friendly</li></ul>
+          <span class="play">Play &rarr;</span>
+        </div>
+      </div>
+      <div class="grip"><span>Byte-Sized Breaches</span><span>02</span></div>
+    </a>
+    </div>
   </section>
 
   <section aria-labelledby="soon-h">
@@ -172,7 +209,7 @@ footer p{margin:0}
           <p class="hook">Ask a server to repeat one word, and it sends back its secrets.</p>
           <p class="idea"><b>Planned game:</b> chat with a server that never checks how long your word really is.</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>02</span></div>
+        <div class="grip"><span>Coming soon</span><span>03</span></div>
       </li>
       <li class="cart soon l4">
         <div class="label">
@@ -187,7 +224,7 @@ footer p{margin:0}
           <p class="hook">Typing one strange line into a chat box could take over a server.</p>
           <p class="idea"><b>Planned game:</b> feed messages to a logbook that obeys whatever it writes down.</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>03</span></div>
+        <div class="grip"><span>Coming soon</span><span>04</span></div>
       </li>
       <li class="cart soon sx">
         <div class="label">
@@ -204,7 +241,7 @@ footer p{margin:0}
           <p class="hook">A computer worm that quietly wrecked uranium centrifuges in Iran.</p>
           <p class="idea"><b>Planned game:</b> run a control room while the gauges lie to you.</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>04</span></div>
+        <div class="grip"><span>Coming soon</span><span>05</span></div>
       </li>
       <li class="cart soon mi">
         <div class="label">
@@ -220,7 +257,7 @@ footer p{margin:0}
           <p class="hook">Hacked webcams and routers knocked big websites offline.</p>
           <p class="idea"><b>Planned game:</b> see how factory-default passwords turn gadgets into an army.</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>05</span></div>
+        <div class="grip"><span>Coming soon</span><span>06</span></div>
       </li>
       <li class="cart soon cp">
         <div class="label">
@@ -236,7 +273,7 @@ footer p{margin:0}
           <p class="hook">One old password with no second check shut down a fuel pipeline.</p>
           <p class="idea"><b>Planned game:</b> make the call. Shut the pipeline, or keep the fuel flowing?</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>06</span></div>
+        <div class="grip"><span>Coming soon</span><span>07</span></div>
       </li>
       <li class="cart soon xz">
         <div class="label">
@@ -252,7 +289,7 @@ footer p{margin:0}
           <p class="hook">A friendly volunteer spent two years planting a back door.</p>
           <p class="idea"><b>Planned game:</b> spot the long con hiding in an open-source project's inbox.</p>
         </div>
-        <div class="grip"><span>Coming soon</span><span>07</span></div>
+        <div class="grip"><span>Coming soon</span><span>08</span></div>
       </li>
     </ul>
   </section>
