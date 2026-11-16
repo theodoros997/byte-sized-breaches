@@ -6,9 +6,9 @@
 <title>Byte-Sized Breaches</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Famous cyberattacks and security bugs, explained with small browser games. No tech background needed.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Stencil+Display:wght@900&family=Marcellus&display=swap">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: left-aligned masthead, one wide "now playing" cartridge, then a three-column shelf of upcoming cartridges. Each cartridge wears its own incident's colours. */
 :root{
@@ -130,6 +130,7 @@ section{display:flex;flex-direction:column;gap:18px}
 .about h2{font:400 1.05rem/1.2 var(--font-display);letter-spacing:.04em;margin-bottom:6px}
 .about p{margin:0;color:var(--muted)}
 footer{font-size:.92rem;color:var(--muted)}
+footer{display:flex;flex-direction:column;gap:8px;max-width:75ch}
 footer p{margin:0}
 
 @media (prefers-reduced-motion: reduce){.cart,.flyer,.pg-rec{transition:none;animation:none}}
@@ -300,7 +301,7 @@ footer p{margin:0}
     <div><h2>How it's built</h2><p>Every case is a single self-contained page with its own design, so each one can look like the world of its story.</p></div>
   </div>
 
-  <footer><p>Inspired by explorable explanations such as Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener">The Evolution of Trust</a>.</p></footer>
+  <footer><p>An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no tracking, no third-party requests. Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p><p>Inspired by explorable explanations such as Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener noreferrer">The Evolution of Trust</a>.</p></footer>
 </div>
 </body>
 </html>

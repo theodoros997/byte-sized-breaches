@@ -6,9 +6,9 @@
 <title>EternalBlue</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A playable explainer of the EternalBlue Windows vulnerability, WannaCry and NotPetya, for people with or without a tech background.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Big+Shoulders+Display:wght@600;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: one chapter on stage at a time. Narration sits on the night-blue mailroom wall; every game sits on a manila case board with a folder tab. */
 :root{
@@ -925,20 +925,21 @@ PAGE_FAULT_IN_NONPAGED_AREA
 
   <h3 class="sec">Sources</h3>
   <ol class="sources">
-    <li id="src-1"><a href="https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010" target="_blank" rel="noopener">Microsoft Security Bulletin MS17-010 (Critical)</a> <span class="pub">Microsoft</span></li>
-    <li id="src-2"><a href="https://nvd.nist.gov/vuln/detail/CVE-2017-0144" target="_blank" rel="noopener">CVE-2017-0144 detail</a> <span class="pub">US National Vulnerability Database</span></li>
-    <li id="src-3"><a href="https://msrc.microsoft.com/blog/2017/05/customer-guidance-for-wannacrypt-attacks/" target="_blank" rel="noopener">Customer guidance for WannaCrypt attacks</a> <span class="pub">Microsoft Security Response Center</span></li>
-    <li id="src-4"><a href="https://blogs.microsoft.com/on-the-issues/2017/05/14/need-urgent-collective-action-keep-people-safe-online-lessons-last-weeks-cyberattack/" target="_blank" rel="noopener">The need for urgent collective action to keep people safe online</a> <span class="pub">Brad Smith, Microsoft</span></li>
-    <li id="src-5"><a href="https://www.cisa.gov/news-events/alerts/2017/05/12/indicators-associated-wannacry-ransomware" target="_blank" rel="noopener">Indicators associated with WannaCry ransomware</a> <span class="pub">US CISA</span></li>
-    <li id="src-6"><a href="https://www.nao.org.uk/reports/investigation-wannacry-cyber-attack-and-the-nhs/" target="_blank" rel="noopener">Investigation: WannaCry cyber attack and the NHS</a> <span class="pub">UK National Audit Office</span></li>
-    <li id="src-7"><a href="https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html" target="_blank" rel="noopener">How to accidentally stop a global cyber attack</a> <span class="pub">Marcus Hutchins, MalwareTech</span></li>
-    <li id="src-8"><a href="https://research.checkpoint.com/2017/eternalblue-everything-know/" target="_blank" rel="noopener">EternalBlue: everything there is to know</a> <span class="pub">Check Point Research</span></li>
-    <li id="src-9"><a href="https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" target="_blank" rel="noopener">Russian military "almost certainly" responsible for destructive 2017 cyber attack</a> <span class="pub">UK NCSC</span></li>
-    <li id="src-10"><a href="https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/" target="_blank" rel="noopener">The untold story of NotPetya, the most devastating cyberattack in history</a> <span class="pub">Andy Greenberg, Wired</span></li>
-    <li id="src-11"><a href="https://www.gov.uk/government/news/foreign-office-minister-condemns-north-korean-actor-for-wannacry-attacks" target="_blank" rel="noopener">Foreign Office Minister condemns North Korean actor for WannaCry attacks</a> <span class="pub">UK Government</span></li>
-    <li id="src-12"><a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows" target="_blank" rel="noopener">SMBv1 is not installed by default in Windows 10 version 1709 and later</a> <span class="pub">Microsoft</span></li>
+    <li id="src-1"><a href="https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010" target="_blank" rel="noopener noreferrer">Microsoft Security Bulletin MS17-010 (Critical)</a> <span class="pub">Microsoft</span></li>
+    <li id="src-2"><a href="https://nvd.nist.gov/vuln/detail/CVE-2017-0144" target="_blank" rel="noopener noreferrer">CVE-2017-0144 detail</a> <span class="pub">US National Vulnerability Database</span></li>
+    <li id="src-3"><a href="https://msrc.microsoft.com/blog/2017/05/customer-guidance-for-wannacrypt-attacks/" target="_blank" rel="noopener noreferrer">Customer guidance for WannaCrypt attacks</a> <span class="pub">Microsoft Security Response Center</span></li>
+    <li id="src-4"><a href="https://blogs.microsoft.com/on-the-issues/2017/05/14/need-urgent-collective-action-keep-people-safe-online-lessons-last-weeks-cyberattack/" target="_blank" rel="noopener noreferrer">The need for urgent collective action to keep people safe online</a> <span class="pub">Brad Smith, Microsoft</span></li>
+    <li id="src-5"><a href="https://www.cisa.gov/news-events/alerts/2017/05/12/indicators-associated-wannacry-ransomware" target="_blank" rel="noopener noreferrer">Indicators associated with WannaCry ransomware</a> <span class="pub">US CISA</span></li>
+    <li id="src-6"><a href="https://www.nao.org.uk/reports/investigation-wannacry-cyber-attack-and-the-nhs/" target="_blank" rel="noopener noreferrer">Investigation: WannaCry cyber attack and the NHS</a> <span class="pub">UK National Audit Office</span></li>
+    <li id="src-7"><a href="https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html" target="_blank" rel="noopener noreferrer">How to accidentally stop a global cyber attack</a> <span class="pub">Marcus Hutchins, MalwareTech</span></li>
+    <li id="src-8"><a href="https://research.checkpoint.com/2017/eternalblue-everything-know/" target="_blank" rel="noopener noreferrer">EternalBlue: everything there is to know</a> <span class="pub">Check Point Research</span></li>
+    <li id="src-9"><a href="https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack" target="_blank" rel="noopener noreferrer">Russian military "almost certainly" responsible for destructive 2017 cyber attack</a> <span class="pub">UK NCSC</span></li>
+    <li id="src-10"><a href="https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/" target="_blank" rel="noopener noreferrer">The untold story of NotPetya, the most devastating cyberattack in history</a> <span class="pub">Andy Greenberg, Wired</span></li>
+    <li id="src-11"><a href="https://www.gov.uk/government/news/foreign-office-minister-condemns-north-korean-actor-for-wannacry-attacks" target="_blank" rel="noopener noreferrer">Foreign Office Minister condemns North Korean actor for WannaCry attacks</a> <span class="pub">UK Government</span></li>
+    <li id="src-12"><a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows" target="_blank" rel="noopener noreferrer">SMBv1 is not installed by default in Windows 10 version 1709 and later</a> <span class="pub">Microsoft</span></li>
   </ol>
-  <p class="credits">Part of <a href="index.html">Byte-Sized Breaches</a>. The step-by-step, play-to-learn format is inspired by Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener">The Evolution of Trust</a>. Simulations are simplified models for learning, not exact replays.</p>
+  <p class="credits">Part of <a href="index.html">Byte-Sized Breaches</a>. The step-by-step, play-to-learn format is inspired by Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener noreferrer">The Evolution of Trust</a>. Simulations are simplified models for learning, not exact replays.</p>
+  <p class="credits">An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no tracking, no third-party requests. Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p>
 </section>
 
 </main>

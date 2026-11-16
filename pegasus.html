@@ -6,9 +6,9 @@
 <title>Pegasus</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A playable explainer of the Pegasus spyware: one-click and zero-click phone hacks, what it could see, who was targeted, and how it was caught.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Figtree:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Layout: one chapter at a time under a night sky. Progress is drawn as a constellation; every game runs on a phone held up beside its explanation. Gold = starlight and safety, magenta = the spy. */
 :root{
@@ -790,20 +790,21 @@ h3.sec{font:400 1.8rem/1 var(--font-display);margin:8px 0 0}
 
   <h3 class="sec">Sources</h3>
   <ol class="sources">
-    <li id="src-1"><a href="https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/" target="_blank" rel="noopener">The Million Dollar Dissident</a>, Citizen Lab</li>
-    <li id="src-2"><a href="https://citizenlab.ca/2018/09/hide-and-seek-tracking-nso-groups-pegasus-spyware-to-operations-in-45-countries/" target="_blank" rel="noopener">Hide and Seek: tracking NSO Group's Pegasus spyware to operations in 45 countries</a>, Citizen Lab</li>
-    <li id="src-3"><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-3568" target="_blank" rel="noopener">CVE-2019-3568 detail</a>, US National Vulnerability Database</li>
-    <li id="src-4"><a href="https://forbiddenstories.org/case/the-pegasus-project/" target="_blank" rel="noopener">The Pegasus Project</a>, Forbidden Stories</li>
-    <li id="src-5"><a href="https://www.amnesty.org/en/latest/research/2021/07/forensic-methodology-report-how-to-catch-nso-groups-pegasus/" target="_blank" rel="noopener">Forensic Methodology Report: How to catch NSO Group's Pegasus</a>, Amnesty International</li>
-    <li id="src-6"><a href="https://citizenlab.ca/2021/09/forcedentry-nso-group-imessage-zero-click-exploit-captured-in-the-wild/" target="_blank" rel="noopener">FORCEDENTRY: NSO Group iMessage zero-click exploit captured in the wild</a>, Citizen Lab</li>
-    <li id="src-7"><a href="https://googleprojectzero.blogspot.com/2021/12/a-deep-dive-into-nso-zero-click.html" target="_blank" rel="noopener">A deep dive into an NSO zero-click iMessage exploit</a>, Google Project Zero</li>
-    <li id="src-8"><a href="https://www.commerce.gov/news/press-releases/2021/11/commerce-adds-nso-group-and-other-foreign-companies-entity-list" target="_blank" rel="noopener">Commerce adds NSO Group and other foreign companies to Entity List</a>, US Department of Commerce</li>
-    <li id="src-9"><a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/" target="_blank" rel="noopener">Apple sues NSO Group to curb the abuse of state-sponsored spyware</a>, Apple</li>
-    <li id="src-10"><a href="https://www.apple.com/newsroom/2022/07/apple-expands-commitment-to-protect-users-from-mercenary-spyware/" target="_blank" rel="noopener">Apple expands commitment to protect users from mercenary spyware</a>, Apple</li>
-    <li id="src-11"><a href="https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/" target="_blank" rel="noopener">BLASTPASS: NSO Group iPhone zero-click, zero-day exploit captured in the wild</a>, Citizen Lab</li>
-    <li id="src-12"><a href="https://github.com/mvt-project/mvt" target="_blank" rel="noopener">Mobile Verification Toolkit (MVT)</a>, Amnesty International Security Lab</li>
+    <li id="src-1"><a href="https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/" target="_blank" rel="noopener noreferrer">The Million Dollar Dissident</a>, Citizen Lab</li>
+    <li id="src-2"><a href="https://citizenlab.ca/2018/09/hide-and-seek-tracking-nso-groups-pegasus-spyware-to-operations-in-45-countries/" target="_blank" rel="noopener noreferrer">Hide and Seek: tracking NSO Group's Pegasus spyware to operations in 45 countries</a>, Citizen Lab</li>
+    <li id="src-3"><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-3568" target="_blank" rel="noopener noreferrer">CVE-2019-3568 detail</a>, US National Vulnerability Database</li>
+    <li id="src-4"><a href="https://forbiddenstories.org/case/the-pegasus-project/" target="_blank" rel="noopener noreferrer">The Pegasus Project</a>, Forbidden Stories</li>
+    <li id="src-5"><a href="https://www.amnesty.org/en/latest/research/2021/07/forensic-methodology-report-how-to-catch-nso-groups-pegasus/" target="_blank" rel="noopener noreferrer">Forensic Methodology Report: How to catch NSO Group's Pegasus</a>, Amnesty International</li>
+    <li id="src-6"><a href="https://citizenlab.ca/2021/09/forcedentry-nso-group-imessage-zero-click-exploit-captured-in-the-wild/" target="_blank" rel="noopener noreferrer">FORCEDENTRY: NSO Group iMessage zero-click exploit captured in the wild</a>, Citizen Lab</li>
+    <li id="src-7"><a href="https://googleprojectzero.blogspot.com/2021/12/a-deep-dive-into-nso-zero-click.html" target="_blank" rel="noopener noreferrer">A deep dive into an NSO zero-click iMessage exploit</a>, Google Project Zero</li>
+    <li id="src-8"><a href="https://www.commerce.gov/news/press-releases/2021/11/commerce-adds-nso-group-and-other-foreign-companies-entity-list" target="_blank" rel="noopener noreferrer">Commerce adds NSO Group and other foreign companies to Entity List</a>, US Department of Commerce</li>
+    <li id="src-9"><a href="https://www.apple.com/newsroom/2021/11/apple-sues-nso-group-to-curb-the-abuse-of-state-sponsored-spyware/" target="_blank" rel="noopener noreferrer">Apple sues NSO Group to curb the abuse of state-sponsored spyware</a>, Apple</li>
+    <li id="src-10"><a href="https://www.apple.com/newsroom/2022/07/apple-expands-commitment-to-protect-users-from-mercenary-spyware/" target="_blank" rel="noopener noreferrer">Apple expands commitment to protect users from mercenary spyware</a>, Apple</li>
+    <li id="src-11"><a href="https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/" target="_blank" rel="noopener noreferrer">BLASTPASS: NSO Group iPhone zero-click, zero-day exploit captured in the wild</a>, Citizen Lab</li>
+    <li id="src-12"><a href="https://github.com/mvt-project/mvt" target="_blank" rel="noopener noreferrer">Mobile Verification Toolkit (MVT)</a>, Amnesty International Security Lab</li>
   </ol>
   <p class="credits">Part of <a href="index.html">Byte-Sized Breaches</a>. Lena and the example messages are invented; the example link in chapter 2 is not real. Games are simplified models for learning, not replays of the real attacks.</p>
+  <p class="credits">An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no tracking, no third-party requests. Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p>
 </section>
 
 </main>

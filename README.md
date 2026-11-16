@@ -11,8 +11,14 @@ Famous cyberattacks and security bugs, explained with small browser games. The m
 | `eternalblue.js` | Case 01. Chapter navigation and the eight games. Plain JavaScript, no libraries. |
 | `pegasus.html` | Case 02. Markup, story text and all styles for the Pegasus explainer. |
 | `pegasus.js` | Case 02. Chapter navigation and the eight games. |
+| `fonts/` | Self-hosted web fonts (`fonts.css` plus `.woff2` files) and their licenses (SIL Open Font License 1.1). |
+| `SECURITY.md` | What the site does with visitors' data (nothing), and how to report problems. |
 
-Everything is static. There is no build step and nothing to install. Fonts come from Google Fonts.
+Everything is static. There is no build step and nothing to install.
+
+**Privacy:** pages make no third-party requests. Fonts are self-hosted, and there are no analytics, cookies or trackers. Each page sets a strict Content Security Policy (scripts, styles and fonts from the site itself only) and a no-referrer policy. See `SECURITY.md`.
+
+When adding a new page, copy the `<meta http-equiv="Content-Security-Policy">` line from an existing page, link `fonts/fonts.css`, and add any new font to `fonts/` (with its license) rather than loading it from a CDN.
 
 ## Run it locally
 
