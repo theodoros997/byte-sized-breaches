@@ -4,11 +4,10 @@
    and when the page is opened locally. */
 (() => {
   'use strict';
-  const CODE = 'your-goatcounter-code'; // the "yourname" in yourname.goatcounter.com
+  const CODE = 'theodoros997'; // the "yourname" in yourname.goatcounter.com
   const ENDPOINT = 'https://' + CODE + '.goatcounter.com/count';
 
-  const off = CODE === 'your-goatcounter-code' ||
-    navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true ||
+  const off = navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true ||
     !/^https?:$/.test(location.protocol) ||
     /^(localhost|127\.|\[::1\]$)/.test(location.hostname);
 
