@@ -6,7 +6,7 @@
 <title>Pegasus</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A playable explainer of the Pegasus spyware: one-click and zero-click phone hacks, what it could see, who was targeted, and how it was caught.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://theodoros997.goatcounter.com; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="fonts/fonts.css">
 <style>
@@ -48,6 +48,7 @@ body{margin:0;color:var(--star);font:400 1.1rem/1.62 var(--font-body);-webkit-te
   background-size:430px 430px,430px 430px,430px 430px,430px 430px,430px 430px,430px 430px,430px 430px,100% 100%;
   background-repeat:repeat,repeat,repeat,repeat,repeat,repeat,repeat,no-repeat}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 img,svg{max-width:100%}
 a{color:var(--gold)}
 b,strong{font-weight:700}
@@ -389,6 +390,10 @@ details.deeper summary:focus-visible{outline:3px solid var(--gold);outline-offse
 .sources{margin:0;padding-left:1.6em;max-width:82ch;display:flex;flex-direction:column;gap:6px;color:var(--star-dim);font-size:1rem}
 .sources a{overflow-wrap:anywhere}
 h3.sec{font:400 1.8rem/1 var(--font-display);margin:8px 0 0}
+.support{margin:28px 0;padding:20px 22px;border:1px solid var(--gold-dim);border-radius:18px;background:var(--sky-2);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px}
+.support h3{margin:0 0 4px;font:400 1.4rem/1.15 var(--font-display);color:var(--gold)}
+.support .nw{white-space:nowrap}
+.support p{margin:0;color:var(--star-dim);max-width:58ch}
 .credits{font-size:.95rem;color:var(--star-dim);max-width:72ch}
 
 @media (prefers-reduced-motion: reduce){
@@ -788,6 +793,11 @@ h3.sec{font:400 1.8rem/1 var(--font-display);margin:8px 0 0}
     <li><time datetime="2024-12">December 2024</time><p>A US judge rules NSO liable for hacking WhatsApp users.</p></li>
   </ol>
 
+  <aside class="support" aria-labelledby="support-h">
+    <div><h3 id="support-h">Enjoyed this case?</h3><p>Byte-Sized Breaches is free, with no ads or tracking. A small tip on <span class="nw">Ko-fi</span> helps fund the next breach.</p></div>
+    <a class="btn" href="https://ko-fi.com/bytesizebreaches" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">&#9749;</span> Support on Ko-fi<span class="sr-only"> (opens in a new tab)</span></a>
+  </aside>
+
   <h3 class="sec">Sources</h3>
   <ol class="sources">
     <li id="src-1"><a href="https://citizenlab.ca/2016/08/million-dollar-dissident-iphone-zero-day-nso-group-uae/" target="_blank" rel="noopener noreferrer">The Million Dollar Dissident</a>, Citizen Lab</li>
@@ -804,10 +814,11 @@ h3.sec{font:400 1.8rem/1 var(--font-display);margin:8px 0 0}
     <li id="src-12"><a href="https://github.com/mvt-project/mvt" target="_blank" rel="noopener noreferrer">Mobile Verification Toolkit (MVT)</a>, Amnesty International Security Lab</li>
   </ol>
   <p class="credits">Part of <a href="index.html">Byte-Sized Breaches</a>. Lena and the example messages are invented; the example link in chapter 2 is not real. Games are simplified models for learning, not replays of the real attacks.</p>
-  <p class="credits">An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no tracking, no third-party requests. Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p>
+  <p class="credits">An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no ads, no personal tracking: just anonymous visit counts (skipped if your browser asks not to be tracked). Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p>
 </section>
 
 </main>
+<script src="stats.js"></script>
 <script src="pegasus.js"></script>
 </body>
 </html>
