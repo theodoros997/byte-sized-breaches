@@ -11,12 +11,15 @@ Famous cyberattacks and security bugs, explained with small browser games. The m
 | `eternalblue.js` | Case 01. Chapter navigation and the eight games. Plain JavaScript, no libraries. |
 | `pegasus.html` | Case 02. Markup, story text and all styles for the Pegasus explainer. |
 | `pegasus.js` | Case 02. Chapter navigation and the eight games. |
+| `stats.js` | Anonymous visit counts via GoatCounter, shared by all pages. See *Analytics* below. |
 | `fonts/` | Self-hosted web fonts (`fonts.css` plus `.woff2` files) and their licenses (SIL Open Font License 1.1). |
 | `SECURITY.md` | What the site does with visitors' data (nothing), and how to report problems. |
 
 Everything is static. There is no build step and nothing to install.
 
-**Privacy:** pages make no third-party requests. Fonts are self-hosted, and there are no analytics, cookies or trackers. Each page sets a strict Content Security Policy (scripts, styles and fonts from the site itself only) and a no-referrer policy. See `SECURITY.md`.
+**Privacy:** fonts are self-hosted, and there are no ads, cookies or third-party scripts. The only outside request is an anonymous visit count to GoatCounter (see below). Each page sets a strict Content Security Policy (scripts, styles and fonts from the site itself only; images also from GoatCounter) and a no-referrer policy. See `SECURITY.md`.
+
+**Analytics:** `stats.js` sends anonymous counts to [GoatCounter](https://www.goatcounter.com) as a tiny image request, with no cookies and no GoatCounter script. It counts one view per hub visit, one per chapter reached in a case (each case's router fires a `chapterchange` event), and Ko-fi button clicks (as events named `kofi-click/<page>`). It sends nothing when the browser sets Do Not Track or Global Privacy Control, or when the site runs on `localhost` or from disk. To set it up, replace `your-goatcounter-code` with your GoatCounter code in `stats.js` and in the `img-src` part of the Content Security Policy in each `.html` page. New cases need the same CSP line, `<script src="stats.js"></script>` before their own script, and the `chapterchange` line in their router.
 
 **Support link:** the hub and the end of each case (before the sources) have a "Support on Ko-fi" box. It is a plain link with no Ko-fi widget or script, so it adds no third-party requests. The Ko-fi page address appears in `index.html`, `eternalblue.html` and `pegasus.html`; search for `ko-fi.com/` to change it, and copy the `<aside class="support">` block into new cases.
 

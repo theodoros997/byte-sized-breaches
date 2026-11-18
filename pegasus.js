@@ -117,6 +117,7 @@
     if (h && fromHash !== 'init') h.focus({ preventScroll: true });
     const eh = hooks[ch.id];
     if (eh && eh.enter) eh.enter();
+    document.dispatchEvent(new CustomEvent('chapterchange', { detail: { id: ch.id, title: ch.dataset.title || ch.id } }));
   }
   function indexOfHash() {
     const id = location.hash.slice(1);
