@@ -6,6 +6,7 @@
 - Pages make **no third-party requests**. Fonts are stored in this repository (`fonts/`), and there are no analytics, ads, cookies or trackers.
 - Each page has a Content Security Policy that only allows scripts, styles and fonts from the site itself, and a no-referrer policy.
 - The games run entirely in your browser and store nothing.
+- The "Support on Ko-fi" button is a plain link. Nothing from Ko-fi loads on these pages. Ko-fi's own site and privacy policy apply only if you click it, and no referrer is sent.
 - The pages describe real attacks in plain language. They contain **no exploit code** and nothing that could be used to attack a device.
 
 ## Reporting a problem

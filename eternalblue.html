@@ -34,6 +34,7 @@ body{margin:0;color:var(--ink);font:400 1.125rem/1.6 var(--font-body);
   background:radial-gradient(1100px 520px at 85% -8%,var(--night-3) 0%,transparent 62%),var(--night);
   -webkit-text-size-adjust:100%}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 img,svg{max-width:100%}
 a{color:var(--blue-hi)}
 b,strong{font-weight:700}
@@ -413,6 +414,10 @@ input[type=range]{width:100%;accent-color:var(--blue);margin:0;height:28px}
 .sources a{overflow-wrap:anywhere}
 .sources .pub{color:var(--ink-dim)}
 h3.sec{font:800 1.7rem/1 var(--font-head);text-transform:uppercase;letter-spacing:.03em;margin:8px 0 0}
+.support{margin:28px 0;padding:20px 22px;border:2px dashed var(--manila-3);border-radius:10px;background:var(--night-2);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px}
+.support h3{margin:0 0 4px;font:800 1.4rem/1.1 var(--font-head);letter-spacing:.04em;text-transform:uppercase;color:var(--manila)}
+.support .nw{white-space:nowrap}
+.support p{margin:0;color:var(--ink-dim);max-width:58ch}
 .credits{font-size:.95rem;color:var(--ink-dim);max-width:70ch}
 
 @media (prefers-reduced-motion: reduce){
@@ -922,6 +927,11 @@ PAGE_FAULT_IN_NONPAGED_AREA
     <li><time datetime="2017-12-19">19 December 2017</time><p>The UK and US governments publicly blame North Korea for WannaCry.<a class="ref" href="#src-11">[11]</a></p></li>
     <li><time datetime="2018-02-15">15 February 2018</time><p>The UK and US governments blame the Russian military for NotPetya.<a class="ref" href="#src-9">[9]</a></p></li>
   </ol>
+
+  <aside class="support" aria-labelledby="support-h">
+    <div><h3 id="support-h">Enjoyed this case?</h3><p>Byte-Sized Breaches is free, with no ads or tracking. A small tip on <span class="nw">Ko-fi</span> helps fund the next breach.</p></div>
+    <a class="btn" href="https://ko-fi.com/YOUR_KOFI_NAME" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">&#9749;</span> Support on Ko-fi<span class="sr-only"> (opens in a new tab)</span></a>
+  </aside>
 
   <h3 class="sec">Sources</h3>
   <ol class="sources">

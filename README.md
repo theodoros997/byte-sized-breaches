@@ -18,6 +18,8 @@ Everything is static. There is no build step and nothing to install.
 
 **Privacy:** pages make no third-party requests. Fonts are self-hosted, and there are no analytics, cookies or trackers. Each page sets a strict Content Security Policy (scripts, styles and fonts from the site itself only) and a no-referrer policy. See `SECURITY.md`.
 
+**Support link:** the hub and the end of each case (before the sources) have a "Support on Ko-fi" box. It is a plain link with no Ko-fi widget or script, so it adds no third-party requests. The Ko-fi page address appears in `index.html`, `eternalblue.html` and `pegasus.html`; search for `ko-fi.com/` to change it, and copy the `<aside class="support">` block into new cases.
+
 When adding a new page, copy the `<meta http-equiv="Content-Security-Policy">` line from an existing page, link `fonts/fonts.css`, and add any new font to `fonts/` (with its license) rather than loading it from a CDN.
 
 ## Run it locally

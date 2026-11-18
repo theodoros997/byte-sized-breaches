@@ -36,6 +36,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:400 1.06rem/1.55 var(--font-body)}
 [hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 img,svg{max-width:100%}
 a{color:var(--accent)}
 .wrap{max-width:1120px;margin:0 auto;padding-block:40px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:44px}
@@ -129,6 +130,13 @@ section{display:flex;flex-direction:column;gap:18px}
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:18px;border-top:2px solid var(--line);padding-top:28px}
 .about h2{font:400 1.05rem/1.2 var(--font-display);letter-spacing:.04em;margin-bottom:6px}
 .about p{margin:0;color:var(--muted)}
+.support{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:20px 22px}
+.support h2{font:400 1.05rem/1.2 var(--font-display);letter-spacing:.04em;margin:0 0 4px}
+.support .nw{white-space:nowrap}
+.support p{margin:0;color:var(--muted);max-width:60ch}
+.kofi{display:inline-flex;align-items:center;gap:.5em;background:var(--accent);color:var(--surface);font-weight:700;text-decoration:none;padding:.7em 1.2em;border-radius:999px;white-space:nowrap}
+.kofi:hover{filter:brightness(1.1)}
+.kofi:focus-visible{outline:3px solid var(--fg);outline-offset:3px}
 footer{font-size:.92rem;color:var(--muted)}
 footer{display:flex;flex-direction:column;gap:8px;max-width:75ch}
 footer p{margin:0}
@@ -300,6 +308,11 @@ footer p{margin:0}
     <div><h2>Who it's for</h2><p>Anyone. The main path uses plain language and everyday metaphors. "Go deeper" notes add the real technical detail for people who want it.</p></div>
     <div><h2>How it's built</h2><p>Every case is a single self-contained page with its own design, so each one can look like the world of its story.</p></div>
   </div>
+
+  <aside class="support" aria-labelledby="support-h">
+    <div><h2 id="support-h">Keep the arcade running</h2><p>Every case is free and stays free, with no ads or tracking. If you enjoyed one, a small tip on <span class="nw">Ko-fi</span> helps fund the next breach.</p></div>
+    <a class="kofi" href="https://ko-fi.com/YOUR_KOFI_NAME" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">&#9749;</span> Support on Ko-fi<span class="sr-only"> (opens in a new tab)</span></a>
+  </aside>
 
   <footer><p>An independent educational project, not affiliated with or endorsed by any company, government or organisation named. It contains no exploit code. No cookies, no tracking, no third-party requests. Spot a mistake? <a href="https://github.com/theodoros997/byte-sized-breaches/issues" target="_blank" rel="noopener noreferrer">Report it on GitHub</a>.</p><p>Inspired by explorable explanations such as Nicky Case's <a href="https://ncase.me/trust/" target="_blank" rel="noopener noreferrer">The Evolution of Trust</a>.</p></footer>
 </div>
